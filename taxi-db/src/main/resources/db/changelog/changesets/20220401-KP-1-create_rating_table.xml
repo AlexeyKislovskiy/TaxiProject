@@ -3,10 +3,10 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
 
-    <changeSet id="003" author="fertdt">
+    <changeSet id="001" author="fertdt">
         <createTable tableName="rating">
             <column name="uuid" type="uuid">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="rating_pk"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_rating"/>
             </column>
             <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
             <column name="status" type="VARCHAR(20)">
@@ -15,12 +15,12 @@
             <column name="value" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
-            <column name="get_rating_user_id" type="uuid">
-                <constraints nullable="false" foreignKeyName="rating_get_fk"
+            <column name="rated_to_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_rated_to"
                              referencedTableName="account" referencedColumnNames="uuid"/>
             </column>
-            <column name="put_rating_user_id" type="uuid">
-                <constraints nullable="false" foreignKeyName="rating_put_fk"
+            <column name="rated_by_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_rated_by"
                              referencedTableName="account" referencedColumnNames="uuid"/>
             </column>
         </createTable>
@@ -28,7 +28,7 @@
             ALTER TABLE rating
                 ADD CONSTRAINT rating_value_check CHECK (value &gt;= 1 AND value &lt;= 5);
             ALTER TABLE rating
-                ADD CONSTRAINT rating_status_check CHECK (status in('DRIVER_TO_PASSENGER','PASSENGER_TO_DRIVER'));
+                ADD CONSTRAINT rating_status_check CHECK (status in ('DRIVER_TO_PASSENGER', 'PASSENGER_TO_DRIVER'));
         </sql>
     </changeSet>
 

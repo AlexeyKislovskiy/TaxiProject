@@ -3,6 +3,7 @@ package fertdt.service.impl;
 
 import fertdt.dto.request.UserExtendedRequest;
 import fertdt.dto.response.UserResponse;
+import fertdt.exception.DuplicatedUsernameException;
 import fertdt.exception.UserNotFoundException;
 import fertdt.model.UserEntity;
 import fertdt.repository.UserRepository;
@@ -22,6 +23,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UUID createUser(UserExtendedRequest user) {
+        userRepository.findByUsername(user.getUsername()).ifPresent(s -> {
+            throw new DuplicatedUsernameException();
+        });
         return userRepository.save(userMapper.toEntity(user)).getUuid();
     }
 

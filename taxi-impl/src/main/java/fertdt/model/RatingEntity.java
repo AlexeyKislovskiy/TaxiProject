@@ -1,14 +1,12 @@
 package fertdt.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Data
 @SuperBuilder
 @AllArgsConstructor
@@ -18,20 +16,19 @@ import javax.persistence.*;
 public class RatingEntity extends AbstractEntity {
 
     @ManyToOne
-    @JoinColumn(name = "put_rating_user_id", referencedColumnName = "uuid")
-    private UserEntity putRatingUser;
+    @JoinColumn(name = "rated_by_id", referencedColumnName = "uuid")
+    private UserEntity ratedBy;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne
-    @JoinColumn(name = "get_rating_user_id", referencedColumnName = "uuid")
-    private UserEntity getRatingUser;
+    @JoinColumn(name = "rated_to_id", referencedColumnName = "uuid")
+    private UserEntity ratedTo;
 
+    @Column(name = "value", nullable = false)
     private Integer value;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
-
-    public enum Status {
-        DRIVER_TO_PASSENGER,
-        PASSENGER_TO_DRIVER
-    }
+    @Column(name = "status", nullable = false)
+    private RatingStatus status;
 }

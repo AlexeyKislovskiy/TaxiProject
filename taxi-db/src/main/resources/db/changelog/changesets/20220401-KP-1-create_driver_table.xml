@@ -3,10 +3,10 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
 
-    <changeSet id="002" author="fertdt">
+    <changeSet id="001" author="fertdt">
         <createTable tableName="driver">
             <column name="uuid" type="uuid">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="driver_pk" foreignKeyName="driver_fk"
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_driver" foreignKeyName="fk_driver"
                              referencedTableName="account" referencedColumnNames="uuid"/>
             </column>
         </createTable>

@@ -3,8 +3,8 @@ package fertdt.service.impl;
 
 import fertdt.dto.request.UserExtendedRequest;
 import fertdt.dto.response.UserResponse;
-import fertdt.exception.DuplicatedUsernameException;
-import fertdt.exception.UserNotFoundException;
+import fertdt.exception.duplicatedName.DuplicatedUsernameException;
+import fertdt.exception.notFound.UserNotFoundException;
 import fertdt.model.UserEntity;
 import fertdt.repository.UserRepository;
 import fertdt.service.UserService;
@@ -45,6 +45,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse updateUserById(UUID userId, UserExtendedRequest user) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        if (!userEntity.getUsername().equals(user.getUsername())) {
+            userRepository.findByUsername(user.getUsername()).ifPresent(s -> {
+                throw new DuplicatedUsernameException();
+            });
+        }
         return userMapper.toResponse(
                 userRepository.save(userMapper.toEntity(userEntity, user))
         );

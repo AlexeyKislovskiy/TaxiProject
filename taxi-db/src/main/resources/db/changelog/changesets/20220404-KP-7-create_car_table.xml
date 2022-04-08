@@ -1,0 +1,56 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="001" author="fertdt">
+        <createTable tableName="car">
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_car"/>
+            </column>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="number" type="VARCHAR(20)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uk_car_number"/>
+            </column>
+            <column name="model" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="color" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="seats_number" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="child_seats_number" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="manufacture_year" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="car_class_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_car_to_car_class"
+                             referencedTableName="car_class" referencedColumnNames="uuid"/>
+            </column>
+            <column name="taxi_park_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_car_to_taxi_park"
+                             referencedTableName="taxi_park" referencedColumnNames="uuid"/>
+            </column>
+            <column name="owner_id" type="uuid">
+                <constraints nullable="true" foreignKeyName="fk_car_to_owner"
+                             referencedTableName="driver" referencedColumnNames="uuid"/>
+            </column>
+            <column name="daily_rental_price" type="INT"/>
+        </createTable>
+        <sql>
+            ALTER TABLE car
+                ADD CONSTRAINT car_seats_number_check CHECK (seats_number &gt;= 1);
+            ALTER TABLE car
+                ADD CONSTRAINT car_child_seats_number_check CHECK (child_seats_number &gt;= 0);
+            ALTER TABLE car
+                ADD CONSTRAINT car_manufacture_year_check CHECK (manufacture_year &gt;= 2008 AND manufacture_year &lt;= date_part('year', now()));
+            ALTER TABLE car
+                ADD CONSTRAINT car_daily_rental_price_check CHECK (daily_rental_price &gt;= 0);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

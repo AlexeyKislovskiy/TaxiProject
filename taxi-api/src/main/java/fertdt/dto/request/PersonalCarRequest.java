@@ -1,23 +1,20 @@
 package fertdt.dto.request;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.UUID;
+
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserExtendedRequest extends UserRequest {
-
-    @NotBlank
-    private String firstName;
-
-    @NotBlank
-    private String lastName;
+public class PersonalCarRequest extends CarRequest {
+    @NotNull
+    private UUID ownerId;
 }
-

@@ -9,5 +9,9 @@
     <include file="changesets/20220401-KP-1-create_user_table.xml" relativeToChangelogFile="true"/>
     <include file="changesets/20220401-KP-1-create_driver_table.xml" relativeToChangelogFile="true"/>
     <include file="changesets/20220401-KP-1-create_rating_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220404-KP-7-create_car_class_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220404-KP-7-insert_car_classes.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220404-KP-7-create_taxi_park_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220404-KP-7-create_car_table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

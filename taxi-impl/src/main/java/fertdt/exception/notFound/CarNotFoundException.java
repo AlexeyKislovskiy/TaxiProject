@@ -1,8 +1,8 @@
 package fertdt.exception.notFound;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Car not found")
-public class CarNotFoundException extends NotFoundException{
+public class CarNotFoundException extends NotFoundException {
+    public CarNotFoundException() {
+        super();
+        this.message = "Car not found";
+    }
 }

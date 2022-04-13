@@ -1,13 +1,12 @@
 package fertdt.dto.request;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @SuperBuilder
 @Data
@@ -15,10 +14,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class UserRequest {
 
-    @NotBlank
+    @NotBlank(message = "Username can not be blank")
     private String username;
 
-    @NotBlank
-    @Size(min = 8)
+    @NotBlank(message = "Password can not be blank")
+    @Size(min = 8, message = "Password cannot be less than {min} characters")
     private String password;
 }

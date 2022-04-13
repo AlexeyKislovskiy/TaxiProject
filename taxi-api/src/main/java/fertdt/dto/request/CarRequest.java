@@ -16,31 +16,31 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CarRequest {
-    @NotBlank
+    @NotBlank(message = "Number can not be blank")
     private String number;
 
-    @NotBlank
+    @NotBlank(message = "Model can not be blank")
     private String model;
 
-    @NotBlank
+    @NotBlank(message = "Color can not be blank")
     private String color;
 
-    @NotNull
-    @Min(1)
+    @NotNull(message = "Seats number can not be null")
+    @Min(value = 1, message = "Seats number can not be less than {value}")
     private Integer seatsNumber;
 
-    @NotNull
-    @Min(0)
+    @NotNull(message = "Child seats number can not be null")
+    @Min(value = 0, message = "Child seats number can not be less than {value}")
     private Integer childSeatsNumber;
 
-    @NotNull
-    @Min(2008)
-    @Max(2022)
+    @NotNull(message = "Manufacture year can not be null")
+    @Min(value = 2008, message = "Car cannot be older than {value}")
+    @Max(value = 2022, message = "Manufacture year can not be more than {value}")
     private Integer manufactureYear;
 
-    @NotNull
+    @NotNull(message = "Car class id can not be null")
     private UUID carClassId;
 
-    @NotNull
+    @NotNull(message = "Taxi park id can not be null")
     private UUID taxiParkId;
 }

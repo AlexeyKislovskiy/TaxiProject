@@ -1,8 +1,11 @@
 package fertdt.exception.notFound;
 
+import fertdt.exception.ApiException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Object not found")
-public class NotFoundException extends RuntimeException{
+public class NotFoundException extends ApiException {
+    public NotFoundException() {
+        this.status = HttpStatus.NOT_FOUND;
+        this.message = "Object not found";
+    }
 }

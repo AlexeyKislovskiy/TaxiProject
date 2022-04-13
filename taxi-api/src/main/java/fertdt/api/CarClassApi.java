@@ -11,9 +11,9 @@ import java.util.UUID;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
-@RequestMapping("/api/carClasses")
+@RequestMapping("/api/car-classes")
 public interface CarClassApi {
-    @GetMapping(value = "/{carClass-id}", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{car-class-id}", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    CarClassResponse getCarClass(@PathVariable("carClass-id") UUID carClassId);
+    CarClassResponse getCarClass(@PathVariable("car-class-id") UUID carClassId);
 }

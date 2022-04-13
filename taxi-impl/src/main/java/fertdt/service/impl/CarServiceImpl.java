@@ -31,15 +31,22 @@ public class CarServiceImpl implements CarService {
     private final CarMapper carMapper;
 
     @Override
-    public UUID createCar(CarRequest car) {
+    public UUID createCar(PersonalCarRequest car) {
         carRepository.findByNumber(car.getNumber()).ifPresent(s -> {
             throw new DuplicatedCarNumberException();
         });
         carRequestCheck(car);
-        if (car instanceof PersonalCarRequest)
-            return carRepository.save(carMapper.toEntity((PersonalCarRequest) car)).getUuid();
-        else
-            return carRepository.save(carMapper.toEntity((RentedCarRequest) car)).getUuid();
+        driverRepository.findById(car.getOwnerId()).orElseThrow(DriverNotFoundException::new);
+        return carRepository.save(carMapper.toEntity(car)).getUuid();
+    }
+
+    @Override
+    public UUID createCar(RentedCarRequest car) {
+        carRepository.findByNumber(car.getNumber()).ifPresent(s -> {
+            throw new DuplicatedCarNumberException();
+        });
+        carRequestCheck(car);
+        return carRepository.save(carMapper.toEntity(car)).getUuid();
     }
 
     @Override
@@ -56,7 +63,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public CarResponse updateCarById(UUID carId, CarRequest car) {
+    public CarResponse updateCarById(UUID carId, PersonalCarRequest car) {
         CarEntity carEntity = carRepository.findById(carId).orElseThrow(CarNotFoundException::new);
         if (!carEntity.getNumber().equals(car.getNumber())) {
             carRepository.findByNumber(car.getNumber()).ifPresent(s -> {
@@ -64,22 +71,24 @@ public class CarServiceImpl implements CarService {
             });
         }
         carRequestCheck(car);
-        if (car instanceof PersonalCarRequest)
-            return carMapper.toResponse(
-                    carRepository.save(carMapper.toEntity(carEntity, (PersonalCarRequest) car))
-            );
-        else
-            return carMapper.toResponse(
-                    carRepository.save(carMapper.toEntity(carEntity, (RentedCarRequest) car))
-            );
+        driverRepository.findById(car.getOwnerId()).orElseThrow(DriverNotFoundException::new);
+        return carMapper.toResponse(carRepository.save(carMapper.toEntity(carEntity, car)));
+    }
+
+    @Override
+    public CarResponse updateCarById(UUID carId, RentedCarRequest car) {
+        CarEntity carEntity = carRepository.findById(carId).orElseThrow(CarNotFoundException::new);
+        if (!carEntity.getNumber().equals(car.getNumber())) {
+            carRepository.findByNumber(car.getNumber()).ifPresent(s -> {
+                throw new DuplicatedCarNumberException();
+            });
+        }
+        carRequestCheck(car);
+        return carMapper.toResponse(carRepository.save(carMapper.toEntity(carEntity, car)));
     }
 
     private void carRequestCheck(CarRequest car) {
         carClassRepository.findById(car.getCarClassId()).orElseThrow(CarClassNotFoundException::new);
         taxiParkRepository.findById(car.getTaxiParkId()).orElseThrow(TaxiParkNotFoundException::new);
-        if (car instanceof PersonalCarRequest) {
-            PersonalCarRequest personalCarRequest = (PersonalCarRequest) car;
-            driverRepository.findById(personalCarRequest.getOwnerId()).orElseThrow(DriverNotFoundException::new);
-        }
     }
 }

@@ -14,10 +14,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class UserExtendedRequest extends UserRequest {
 
-    @NotBlank
+    @NotBlank(message = "First name can not be blank")
     private String firstName;
 
-    @NotBlank
+    @NotBlank(message = "Last name can not be blank")
     private String lastName;
 }
 

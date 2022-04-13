@@ -1,20 +1,18 @@
-package fertdt.dto.request;
+package fertdt.dto.response;
 
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.util.UUID;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonalCarRequest extends CarRequest {
-    @NotNull(message = "Owner id can not be null")
-    private UUID ownerId;
+public class ExceptionExtendedResponse extends ExceptionResponse {
+    private List<String> errors;
 }

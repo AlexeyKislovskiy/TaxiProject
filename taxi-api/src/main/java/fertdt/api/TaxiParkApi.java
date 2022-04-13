@@ -10,21 +10,21 @@ import java.util.UUID;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
-@RequestMapping("/api/taxiParks")
+@RequestMapping("/api/taxi-parks")
 public interface TaxiParkApi {
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     UUID createTaxiPark(@Valid @RequestBody TaxiParkRequest taxiPark);
 
-    @GetMapping(value = "/{taxiPark-id}", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{taxi-park-id}", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    TaxiParkResponse getTaxiPark(@PathVariable("taxiPark-id") UUID taxiParkId);
+    TaxiParkResponse getTaxiPark(@PathVariable("taxi-park-id") UUID taxiParkId);
 
-    @DeleteMapping(value = "/{taxiPark-id}")
+    @DeleteMapping(value = "/{taxi-park-id}")
     @ResponseStatus(HttpStatus.OK)
-    void deleteTaxiPark(@PathVariable("taxiPark-id") UUID taxiParkId);
+    void deleteTaxiPark(@PathVariable("taxi-park-id") UUID taxiParkId);
 
-    @PutMapping(value = "/{taxiPark-id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{taxi-park-id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    TaxiParkResponse updateTaxiPark(@PathVariable("taxiPark-id") UUID taxiParkId, @Valid @RequestBody TaxiParkRequest taxiPark);
+    TaxiParkResponse updateTaxiPark(@PathVariable("taxi-park-id") UUID taxiParkId, @Valid @RequestBody TaxiParkRequest taxiPark);
 }

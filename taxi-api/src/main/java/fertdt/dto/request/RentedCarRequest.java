@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RentedCarRequest extends CarRequest {
-    @NotNull
-    @Min(0)
+    @NotNull(message = "Daily rental price can not be null")
+    @Min(value = 0, message = "Daily rental price can not be less than {value}")
     private Integer dailyRentalPrice;
 }

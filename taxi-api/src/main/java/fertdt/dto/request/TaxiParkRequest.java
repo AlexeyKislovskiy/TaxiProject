@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaxiParkRequest {
-    @NotBlank
+    @NotBlank(message = "Name can not be blank")
     private String name;
 
-    @NotNull
-    @Min(0)
-    @Max(100)
+    @NotNull(message = "Commission percentage can not be null")
+    @Min(value = 0, message = "Commission percentage can not be less than {value}")
+    @Max(value = 100, message = "Commission percentage can not be more than {value}")
     private Double commissionPercentage;
 }

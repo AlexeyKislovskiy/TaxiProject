@@ -1,0 +1,57 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="001" author="fertdt">
+        <createTable tableName="driver_license">
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_driver_license"/>
+            </column>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="surname" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="patronymic" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_birth" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="place_of_birth" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_issue" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiration_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="department_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_number" type="VARCHAR(10)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uk_driver_license_id_number"/>
+            </column>
+            <column name="place_of_residence" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="driver_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_driver_license_to_driver"
+                             referencedTableName="driver" referencedColumnNames="uuid"/>
+            </column>
+        </createTable>
+        <sql>
+            ALTER TABLE driver_license
+                ADD CONSTRAINT driver_license_date_of_birth_check CHECK (date_of_birth &gt;= '1900-01-01' AND date_of_birth &lt;= NOW() - INTERVAL '14 YEARS');
+            ALTER TABLE driver_license
+                ADD CONSTRAINT driver_license_date_of_issue_check CHECK (date_of_issue &gt;= '1900-01-01' AND date_of_issue &lt;= NOW());
+            ALTER TABLE driver_license
+                ADD CONSTRAINT driver_license_expiration_date_check CHECK (expiration_date &gt;= '1900-01-01' AND expiration_date &lt;= NOW() + INTERVAL '10 YEARS');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

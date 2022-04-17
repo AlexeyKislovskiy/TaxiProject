@@ -22,4 +22,10 @@ public class DriverEntity extends UserEntity {
 
     @OneToMany(mappedBy = "owner")
     private Set<CarEntity> personalCars;
+
+    @OneToOne(mappedBy = "driver")
+    private DriverLicenseEntity driverLicense;
+
+    @OneToOne(mappedBy = "driver")
+    private PassportEntity passport;
 }

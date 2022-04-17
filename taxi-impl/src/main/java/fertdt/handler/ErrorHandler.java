@@ -4,6 +4,7 @@ import fertdt.dto.response.ExceptionExtendedResponse;
 import fertdt.dto.response.ExceptionResponse;
 import fertdt.exception.duplicatedName.DuplicatedNameException;
 import fertdt.exception.notFound.NotFoundException;
+import fertdt.exception.relationalshipConflict.RelationshipConflictException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,12 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(DuplicatedNameException.class)
     public ExceptionResponse handleDuplicatedNameException(DuplicatedNameException e) {
+        return new ExceptionResponse(e.getStatus().value(), e.getStatus().getReasonPhrase(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(RelationshipConflictException.class)
+    public ExceptionResponse handleRelationshipConflictException(RelationshipConflictException e) {
         return new ExceptionResponse(e.getStatus().value(), e.getStatus().getReasonPhrase(), e.getMessage());
     }
 }

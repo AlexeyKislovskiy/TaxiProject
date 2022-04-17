@@ -1,0 +1,73 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="001" author="fertdt">
+        <insert tableName="vehicle_category">
+            <column name="name"  value="A"/>
+            <column name="description" value="Motorcycles"/>
+        </insert>
+        <insert tableName="vehicle_category">
+            <column name="name"  value="A1"/>
+            <column name="description" value="Light motorcycles (engine capacity up to 125 cc)"/>
+        </insert>
+        <insert tableName="vehicle_category">
+            <column name="name"  value="B"/>
+            <column name="description" value="Passenger cars (gross weight up to 3.5 tons, passenger seats — no more than 8)"/>
+        </insert>
+        <insert tableName="vehicle_category">
+            <column name="name"  value="B1"/>
+            <column name="description" value="Tricycles and ATVs (motor volume over 50 cc)"/>
+        </insert>
+        <insert tableName="vehicle_category">
+            <column name="name"  value="C"/>
+            <column name="description" value="Trucks (with a gross weight of more than 7.5 tons)"/>
+        </insert>
+        <insert tableName="vehicle_category">
+            <column name="name"  value="C1"/>
+            <column name="description" value="Light trucks (with a gross weight from 3.5 to 7.5 tons)"/>
+        </insert>
+        <insert tableName="vehicle_category">
+            <column name="name"  value="D"/>
+            <column name="description" value="Buses (passenger seats — more than 8)"/>
+        </insert>
+        <insert tableName="vehicle_category">
+            <column name="name"  value="D1"/>
+            <column name="description" value="Small buses (passenger seats — from 8 to 16)"/>
+        </insert>
+        <insert tableName="vehicle_category">
+            <column name="name"  value="BE"/>
+            <column name="description" value="Passenger cars with a trailer weighing more than 750 kg"/>
+        </insert>
+        <insert tableName="vehicle_category">
+            <column name="name"  value="CE"/>
+            <column name="description" value="trucks with a trailer weighing more than 750 kg"/>
+        </insert>
+        <insert tableName="vehicle_category">
+            <column name="name"  value="C1E"/>
+            <column name="description" value="Light trucks with a trailer weighing more than 750 kg"/>
+        </insert>
+        <insert tableName="vehicle_category">
+            <column name="name"  value="DE"/>
+            <column name="description" value="Buses with a trailer weighing more than 750 kg"/>
+        </insert>
+        <insert tableName="vehicle_category">
+            <column name="name"  value="D1E"/>
+            <column name="description" value="Small buses with a trailer weighing more than 750 kg"/>
+        </insert>
+        <insert tableName="vehicle_category">
+            <column name="name"  value="M"/>
+            <column name="description" value="Mopeds and light ATVs"/>
+        </insert>
+        <insert tableName="vehicle_category">
+            <column name="name"  value="TM"/>
+            <column name="description" value="Trams"/>
+        </insert>
+        <insert tableName="vehicle_category">
+            <column name="name"  value="TB"/>
+            <column name="description" value="Trolleybuses"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

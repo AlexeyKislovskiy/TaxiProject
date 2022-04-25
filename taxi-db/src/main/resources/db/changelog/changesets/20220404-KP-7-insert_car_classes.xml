@@ -1,0 +1,57 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="001" author="fertdt">
+        <insert tableName="car_class">
+            <column name="name"  value="economy"/>
+            <column name="free_waiting" value="3"/>
+            <column name="paid_waiting" value="9"/>
+            <column name="minimum_price" value="139"/>
+            <column name="minute_price" value="10"/>
+            <column name="kilometer_price" value="10"/>
+        </insert>
+        <insert tableName="car_class">
+            <column name="name"  value="comfort"/>
+            <column name="free_waiting" value="3"/>
+            <column name="paid_waiting" value="13"/>
+            <column name="minimum_price" value="199"/>
+            <column name="minute_price" value="12"/>
+            <column name="kilometer_price" value="12"/>
+        </insert>
+        <insert tableName="car_class">
+            <column name="name"  value="comfort+"/>
+            <column name="free_waiting" value="3"/>
+            <column name="paid_waiting" value="16"/>
+            <column name="minimum_price" value="199"/>
+            <column name="minute_price" value="14"/>
+            <column name="kilometer_price" value="14"/>
+        </insert>
+        <insert tableName="car_class">
+            <column name="name"  value="business"/>
+            <column name="free_waiting" value="3"/>
+            <column name="paid_waiting" value="25"/>
+            <column name="minimum_price" value="399"/>
+            <column name="minute_price" value="22"/>
+            <column name="kilometer_price" value="20"/>
+        </insert>
+        <insert tableName="car_class">
+            <column name="name"  value="premier"/>
+            <column name="free_waiting" value="5"/>
+            <column name="paid_waiting" value="55"/>
+            <column name="minimum_price" value="799"/>
+            <column name="minute_price" value="38"/>
+            <column name="kilometer_price" value="45"/>
+        </insert>
+        <insert tableName="car_class">
+            <column name="name"  value="elite"/>
+            <column name="free_waiting" value="5"/>
+            <column name="paid_waiting" value="55"/>
+            <column name="minimum_price" value="1799"/>
+            <column name="minute_price" value="50"/>
+            <column name="kilometer_price" value="50"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

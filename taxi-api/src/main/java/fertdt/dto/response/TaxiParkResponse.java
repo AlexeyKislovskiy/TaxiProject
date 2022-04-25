@@ -9,11 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponse {
-    private String username;
+public class TaxiParkResponse {
+    private String name;
 
-    private String firstName;
-
-    private String lastName;
-
+    private Double commissionPercentage;
 }

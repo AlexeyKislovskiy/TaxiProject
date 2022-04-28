@@ -5,6 +5,9 @@ import fertdt.dto.response.TaxiParkResponse;
 import fertdt.model.TaxiParkEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+
+import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public interface TaxiParkMapper {
@@ -17,4 +20,9 @@ public interface TaxiParkMapper {
     @Mapping(target = "name", source = "taxiParkRequest.name")
     @Mapping(target = "commissionPercentage", source = "taxiParkRequest.commissionPercentage")
     TaxiParkEntity toEntity(TaxiParkEntity taxiParkEntity, TaxiParkRequest taxiParkRequest);
+
+    @Named("toTaxiParkEntityById")
+    default TaxiParkEntity toTaxiParkEntityById(UUID id) {
+        return TaxiParkEntity.builder().uuid(id).build();
+    }
 }

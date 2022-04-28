@@ -23,9 +23,9 @@ public class DriverEntity extends UserEntity {
     @OneToMany(mappedBy = "owner")
     private Set<CarEntity> personalCars;
 
-    @OneToOne(mappedBy = "driver")
-    private DriverLicenseEntity driverLicense;
+    @OneToMany(mappedBy = "driver")
+    private Set<DriverLicenseEntity> driverLicenses;
 
-    @OneToOne(mappedBy = "driver")
-    private PassportEntity passport;
+    @OneToMany(mappedBy = "driver")
+    private Set<PassportEntity> passports;
 }

@@ -1,9 +1,6 @@
 package fertdt.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
@@ -51,7 +48,9 @@ public class PassportEntity extends AbstractEntity {
     @Column(name = "sex", nullable = false)
     private Sex sex;
 
-    @OneToOne
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne
     @JoinColumn(name = "driver_id", referencedColumnName = "uuid")
     private DriverEntity driver;
 }

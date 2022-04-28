@@ -18,5 +18,8 @@
     <include file="changesets/20220415-KP-4-create_driver_license_table.xml" relativeToChangelogFile="true"/>
     <include file="changesets/20220415-KP-4-create_driver_license_vehicle_category_table.xml" relativeToChangelogFile="true"/>
     <include file="changesets/20220415-KP-4-create_passport_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220424-KP-4-create_refresh_token_entities.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220424-KP-4-add_role_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220424-KP-4-add_privileges.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

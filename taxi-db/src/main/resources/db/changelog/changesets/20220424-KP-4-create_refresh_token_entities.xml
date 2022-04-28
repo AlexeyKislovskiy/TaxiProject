@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="fertdt" id="001">
+        <createTable tableName="account_refresh_token">
+            <column name="uuid" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="account_id" type="uuid">
+                <constraints foreignKeyName="fk_account_refresh_token"
+                             referencedTableName="account"
+                             referencedColumnNames="uuid"/>
+            </column>
+            <column name="expiry_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

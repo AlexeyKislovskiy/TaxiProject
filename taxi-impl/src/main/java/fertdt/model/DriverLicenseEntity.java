@@ -1,9 +1,6 @@
 package fertdt.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
@@ -55,7 +52,9 @@ public class DriverLicenseEntity extends AbstractEntity {
             inverseJoinColumns = @JoinColumn(name = "vehicle_category_id", referencedColumnName = "uuid"))
     private Set<VehicleCategoryEntity> vehicleCategories;
 
-    @OneToOne
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne
     @JoinColumn(name = "driver_id", referencedColumnName = "uuid")
     private DriverEntity driver;
 }

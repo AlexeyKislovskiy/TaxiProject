@@ -3,17 +3,11 @@ package fertdt.util.mapper;
 import fertdt.dto.request.PersonalCarRequest;
 import fertdt.dto.request.RentedCarRequest;
 import fertdt.dto.response.CarResponse;
-import fertdt.model.CarClassEntity;
 import fertdt.model.CarEntity;
-import fertdt.model.DriverEntity;
-import fertdt.model.TaxiParkEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
-import java.util.UUID;
-
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {DriverMapper.class, CarClassMapper.class, TaxiParkMapper.class})
 public interface CarMapper {
     @Mapping(target = "uuid", ignore = true)
     @Mapping(target = "createDate", ignore = true)
@@ -28,8 +22,6 @@ public interface CarMapper {
     @Mapping(target = "taxiPark", source = "taxiParkId", qualifiedByName = "toTaxiParkEntityById")
     CarEntity toEntity(RentedCarRequest carRequest);
 
-    @Mapping(target = "carClass", source = "carEntity.carClass.name")
-    @Mapping(target = "taxiPark", source = "carEntity.taxiPark.name")
     @Mapping(target = "owner", source = "carEntity.owner.username")
     CarResponse toResponse(CarEntity carEntity);
 
@@ -54,19 +46,4 @@ public interface CarMapper {
     @Mapping(target = "taxiPark", source = "carRequest.taxiParkId", qualifiedByName = "toTaxiParkEntityById")
     @Mapping(target = "dailyRentalPrice", source = "carRequest.dailyRentalPrice")
     CarEntity toEntity(CarEntity carEntity, RentedCarRequest carRequest);
-
-    @Named("toTaxiParkEntityById")
-    default TaxiParkEntity toTaxiParkEntityById(UUID id) {
-        return TaxiParkEntity.builder().uuid(id).build();
-    }
-
-    @Named("toCarClassEntityById")
-    default CarClassEntity toCarClassEntityById(UUID id) {
-        return CarClassEntity.builder().uuid(id).build();
-    }
-
-    @Named("toDriverEntityById")
-    default DriverEntity toDriverEntityById(UUID id) {
-        return DriverEntity.builder().uuid(id).build();
-    }
 }

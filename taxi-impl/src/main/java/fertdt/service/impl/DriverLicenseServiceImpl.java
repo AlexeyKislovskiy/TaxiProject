@@ -2,17 +2,14 @@ package fertdt.service.impl;
 
 import fertdt.dto.request.DriverLicenseRequest;
 import fertdt.dto.response.DriverLicenseResponse;
+import fertdt.dto.response.DriverResponse;
 import fertdt.exception.duplicatedName.DuplicatedDriverLicenseIdNumberException;
 import fertdt.exception.notFound.DriverLicenseNotFoundException;
-import fertdt.exception.notFound.DriverNotFoundException;
-import fertdt.exception.notFound.VehicleCategoryNotFoundException;
-import fertdt.exception.relationalshipConflict.DriverAlreadyHasDriverLicenseException;
-import fertdt.model.DriverEntity;
 import fertdt.model.DriverLicenseEntity;
 import fertdt.repository.DriverLicenseRepository;
-import fertdt.repository.DriverRepository;
-import fertdt.repository.VehicleCategoryRepository;
 import fertdt.service.DriverLicenseService;
+import fertdt.service.DriverService;
+import fertdt.service.VehicleCategoryService;
 import fertdt.util.mapper.DriverLicenseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,19 +20,17 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class DriverLicenseServiceImpl implements DriverLicenseService {
     private final DriverLicenseRepository driverLicenseRepository;
-    private final DriverRepository driverRepository;
     private final DriverLicenseMapper driverLicenseMapper;
-    private final VehicleCategoryRepository vehicleCategoryRepository;
+    private final DriverService driverService;
+    private final VehicleCategoryService vehicleCategoryService;
 
     @Override
     public UUID addDriverLicense(DriverLicenseRequest driverLicense) {
         driverLicenseRepository.findByIdNumber(driverLicense.getIdNumber()).ifPresent(s -> {
             throw new DuplicatedDriverLicenseIdNumberException();
         });
-        DriverEntity driver = driverRepository.findById(driverLicense.getDriverId()).orElseThrow(DriverNotFoundException::new);
-        if (driver.getDriverLicense() != null) throw new DriverAlreadyHasDriverLicenseException();
-        driverLicense.getVehicleCategoryIds().forEach(vehicleCategoryId -> vehicleCategoryRepository.
-                findById(vehicleCategoryId).orElseThrow(VehicleCategoryNotFoundException::new));
+        DriverResponse driver = driverService.getDriverById(driverLicense.getDriverId());
+        driverLicense.getVehicleCategoryIds().forEach(vehicleCategoryService::getVehicleCategoryById);
         return driverLicenseRepository.save(driverLicenseMapper.toEntity(driverLicense)).getUuid();
     }
 

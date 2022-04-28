@@ -2,11 +2,8 @@ package fertdt.service.impl;
 
 import fertdt.dto.response.DriverResponse;
 import fertdt.exception.notFound.DriverNotFoundException;
-import fertdt.exception.notFound.UserNotFoundException;
 import fertdt.exception.relationalshipConflict.UserAlreadyHasDriverAccountException;
-import fertdt.model.DriverEntity;
 import fertdt.repository.DriverRepository;
-import fertdt.repository.UserRepository;
 import fertdt.service.DriverService;
 import fertdt.util.mapper.DriverMapper;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +14,17 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class DriverServiceImpl implements DriverService {
-    private final UserRepository userRepository;
     private final DriverRepository driverRepository;
     private final DriverMapper driverMapper;
+    private final UserServiceImpl userService;
 
     @Override
-    public UUID createDriverAccount(UUID userId) {
-        userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+    public void createDriverAccount(UUID userId) {
+        userService.getUserById(userId);
         driverRepository.findById(userId).ifPresent(s -> {
             throw new UserAlreadyHasDriverAccountException();
         });
-        return driverRepository.save(DriverEntity.builder().uuid(userId).build()).getUuid();
+        driverRepository.createDriverAccount(userId);
     }
 
     @Override

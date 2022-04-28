@@ -22,9 +22,9 @@ public class CarResponse {
 
     private Integer manufactureYear;
 
-    private String carClass;
+    private CarClassResponse carClass;
 
-    private String taxiPark;
+    private TaxiParkResponse taxiPark;
 
     private String owner;
 

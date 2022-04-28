@@ -1,0 +1,42 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="fertdt" id="001">
+        <createTable tableName="privileges">
+            <column name="uuid" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="pk_privilege"/>
+            </column>
+            <column name="privilege" type="VARCHAR(64)"/>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="fertdt" id="002">
+        <createTable tableName="role_privilege">
+            <column name="role_id" type="uuid">
+                <constraints foreignKeyName="fk_role_privilege_1"
+                             referencedTableName="roles"
+                             referencedColumnNames="uuid"
+                             initiallyDeferred="false"
+                             deleteCascade="true"/>
+            </column>
+            <column name="privilege_id" type="uuid">
+                <constraints foreignKeyName="fk_role_privilege_2"
+                             referencedTableName="privileges"
+                             referencedColumnNames="uuid"
+                             initiallyDeferred="false"
+                             deleteCascade="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="fertdt" id="003">
+        <sqlFile dbms="postgresql" splitStatements="false"
+                 path="sql/20220424-KP-4-insert_privileges.sql"
+                 stripComments="false"
+                 encoding="utf8"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
+</databaseChangeLog>

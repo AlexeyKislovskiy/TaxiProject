@@ -5,16 +5,13 @@ import fertdt.dto.request.PersonalCarRequest;
 import fertdt.dto.request.RentedCarRequest;
 import fertdt.dto.response.CarResponse;
 import fertdt.exception.duplicatedName.DuplicatedCarNumberException;
-import fertdt.exception.notFound.CarClassNotFoundException;
 import fertdt.exception.notFound.CarNotFoundException;
-import fertdt.exception.notFound.DriverNotFoundException;
-import fertdt.exception.notFound.TaxiParkNotFoundException;
 import fertdt.model.CarEntity;
-import fertdt.repository.CarClassRepository;
 import fertdt.repository.CarRepository;
-import fertdt.repository.DriverRepository;
-import fertdt.repository.TaxiParkRepository;
+import fertdt.service.CarCLassService;
 import fertdt.service.CarService;
+import fertdt.service.DriverService;
+import fertdt.service.TaxiParkService;
 import fertdt.util.mapper.CarMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,10 +22,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
-    private final CarClassRepository carClassRepository;
-    private final TaxiParkRepository taxiParkRepository;
-    private final DriverRepository driverRepository;
     private final CarMapper carMapper;
+    private final CarCLassService carCLassService;
+    private final TaxiParkService taxiParkService;
+    private final DriverService driverService;
 
     @Override
     public UUID createCar(PersonalCarRequest car) {
@@ -36,7 +33,7 @@ public class CarServiceImpl implements CarService {
             throw new DuplicatedCarNumberException();
         });
         carRequestCheck(car);
-        driverRepository.findById(car.getOwnerId()).orElseThrow(DriverNotFoundException::new);
+        driverService.getDriverById(car.getOwnerId());
         return carRepository.save(carMapper.toEntity(car)).getUuid();
     }
 
@@ -71,7 +68,7 @@ public class CarServiceImpl implements CarService {
             });
         }
         carRequestCheck(car);
-        driverRepository.findById(car.getOwnerId()).orElseThrow(DriverNotFoundException::new);
+        driverService.getDriverById(car.getOwnerId());
         return carMapper.toResponse(carRepository.save(carMapper.toEntity(carEntity, car)));
     }
 
@@ -88,7 +85,7 @@ public class CarServiceImpl implements CarService {
     }
 
     private void carRequestCheck(CarRequest car) {
-        carClassRepository.findById(car.getCarClassId()).orElseThrow(CarClassNotFoundException::new);
-        taxiParkRepository.findById(car.getTaxiParkId()).orElseThrow(TaxiParkNotFoundException::new);
+        carCLassService.getClassCarById(car.getCarClassId());
+        taxiParkService.getTaxiParkById(car.getTaxiParkId());
     }
 }

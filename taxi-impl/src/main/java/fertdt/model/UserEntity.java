@@ -33,4 +33,13 @@ public class UserEntity extends AbstractEntity {
     @OneToMany(mappedBy = "ratedTo")
     private Set<RatingEntity> ratingAsPassenger;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinTable(name = "account_roles",
+            joinColumns = {@JoinColumn(name = "account_id", referencedColumnName = "uuid")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "uuid")}
+    )
+    private Set<RoleEntity> roles;
+
 }

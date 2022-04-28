@@ -37,7 +37,7 @@ public class DriverLicenseResponse {
 
     private String placeOfResidence;
 
-    private Set<String> vehicleCategories;
+    private Set<VehicleCategoryResponse> vehicleCategories;
 
     private String driver;
 }

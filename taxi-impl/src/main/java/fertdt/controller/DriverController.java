@@ -14,8 +14,8 @@ public class DriverController implements DriverApi {
     private final DriverService driverService;
 
     @Override
-    public UUID createDriverAccount(UUID userId) {
-        return driverService.createDriverAccount(userId);
+    public void createDriverAccount(UUID userId) {
+        driverService.createDriverAccount(userId);
     }
 
     @Override

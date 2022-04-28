@@ -2,13 +2,14 @@ package fertdt.handler;
 
 import fertdt.dto.response.ExceptionExtendedResponse;
 import fertdt.dto.response.ExceptionResponse;
-import fertdt.exception.duplicatedName.DuplicatedNameException;
-import fertdt.exception.notFound.NotFoundException;
-import fertdt.exception.relationalshipConflict.RelationshipConflictException;
+import fertdt.exception.ApiException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -41,21 +42,46 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, exceptionResponse, headers, HttpStatus.BAD_REQUEST, request);
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundException.class)
-    public ExceptionResponse handleNotFoundException(NotFoundException e) {
-        return new ExceptionResponse(e.getStatus().value(), e.getStatus().getReasonPhrase(), e.getMessage());
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ExceptionResponse> handleApiException(ApiException e) {
+        return ResponseEntity
+                .status(e.getStatus())
+                .body(ExceptionResponse.builder()
+                        .status(e.getStatus().value())
+                        .error(e.getStatus().getReasonPhrase())
+                        .message(e.getMessage())
+                        .build());
     }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(DuplicatedNameException.class)
-    public ExceptionResponse handleDuplicatedNameException(DuplicatedNameException e) {
-        return new ExceptionResponse(e.getStatus().value(), e.getStatus().getReasonPhrase(), e.getMessage());
+    @ExceptionHandler(AccessDeniedException.class)
+    public final ResponseEntity<ExceptionResponse> handleAccessDeniedException(AccessDeniedException e) {
+        return buildExceptionResponse(HttpStatus.FORBIDDEN, e);
     }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(RelationshipConflictException.class)
-    public ExceptionResponse handleRelationshipConflictException(RelationshipConflictException e) {
-        return new ExceptionResponse(e.getStatus().value(), e.getStatus().getReasonPhrase(), e.getMessage());
+    @ExceptionHandler(AuthenticationException.class)
+    public final ResponseEntity<ExceptionResponse> handleAuthenticationException(AuthenticationException e) {
+        return buildExceptionResponse(HttpStatus.UNAUTHORIZED, e);
     }
+
+    @ExceptionHandler(JwtException.class)
+    public final ResponseEntity<ExceptionResponse> handleJwtException(JwtException e) {
+        return buildExceptionResponse(HttpStatus.UNAUTHORIZED, e);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public final ResponseEntity<ExceptionResponse> handleAnotherExceptions(Exception e) {
+        return buildExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, e);
+    }
+
+    private ResponseEntity<ExceptionResponse> buildExceptionResponse(HttpStatus status, Exception e) {
+        return ResponseEntity
+                .status(status)
+                .body(ExceptionResponse.builder()
+                        .status(status.value())
+                        .error(status.getReasonPhrase())
+                        .message(e.getMessage())
+                        .build());
+    }
+
+
 }

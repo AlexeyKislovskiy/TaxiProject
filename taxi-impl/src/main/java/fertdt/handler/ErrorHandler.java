@@ -70,6 +70,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ExceptionResponse> handleAnotherExceptions(Exception e) {
+        e.printStackTrace();
         return buildExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, e);
     }
 

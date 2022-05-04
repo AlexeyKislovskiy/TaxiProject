@@ -28,4 +28,12 @@ public class DriverEntity extends UserEntity {
 
     @OneToMany(mappedBy = "driver")
     private Set<PassportEntity> passports;
+
+    @ManyToOne
+    @JoinColumn(name = "taxi_park_id")
+    private TaxiParkEntity taxiPark;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "driver_status")
+    private DriverStatus driverStatus;
 }

@@ -5,6 +5,8 @@ import fertdt.dto.response.DriverResponse;
 import fertdt.dto.response.PassportResponse;
 import fertdt.exception.duplicatedName.DuplicatedPassportSeriesAndNumberException;
 import fertdt.exception.notFound.PassportNotFoundException;
+import fertdt.model.DriverEntity;
+import fertdt.model.DriverStatus;
 import fertdt.model.PassportEntity;
 import fertdt.repository.PassportRepository;
 import fertdt.service.DriverService;
@@ -28,6 +30,8 @@ public class PassportServiceImpl implements PassportService {
             throw new DuplicatedPassportSeriesAndNumberException();
         });
         DriverResponse driver = driverService.getDriverById(passport.getDriverId());
+        if (!driver.getDriverLicenses().isEmpty())
+            driverService.setDriverStatus(passport.getDriverId(), DriverStatus.DOCUMENTS_NOT_VERIFIED);
         return passportRepository.save(passportMapper.toEntity(passport)).getUuid();
     }
 
@@ -41,6 +45,9 @@ public class PassportServiceImpl implements PassportService {
     @Override
     public void deletePassport(UUID passportId) {
         PassportEntity passport = passportRepository.findById(passportId).orElseThrow(PassportNotFoundException::new);
+        DriverEntity driver = passport.getDriver();
+        if (driver.getPassports().size() == 1)
+            driverService.setDriverStatus(driver.getUuid(), DriverStatus.NO_REQUIRED_DOCUMENTS);
         passportRepository.delete(passport);
     }
 }

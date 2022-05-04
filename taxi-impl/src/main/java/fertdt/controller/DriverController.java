@@ -22,4 +22,19 @@ public class DriverController implements DriverApi {
     public DriverResponse getDriver(UUID driverId) {
         return driverService.getDriverById(driverId);
     }
+
+    @Override
+    public void verifyDriverAccount(UUID driverId) {
+        driverService.verifyDriverAccount(driverId);
+    }
+
+    @Override
+    public void signContractWithTaxiPark(UUID driverId, UUID taxiParkId) {
+        driverService.signContractWithTaxiPark(driverId, taxiParkId);
+    }
+
+    @Override
+    public void breakContractWithTaxiPark(UUID driverId) {
+        driverService.breakContractWithTaxiPark(driverId);
+    }
 }

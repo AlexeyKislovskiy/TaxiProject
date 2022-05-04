@@ -8,7 +8,8 @@ import org.mapstruct.Named;
 
 import java.util.UUID;
 
-@Mapper(componentModel = "spring", uses = {PassportMapper.class, DriverLicenseMapper.class, RatingMapper.class})
+@Mapper(componentModel = "spring", uses = {PassportMapper.class, DriverLicenseMapper.class, RatingMapper.class,
+        TaxiParkMapper.class, DriverStatusMapper.class})
 public interface DriverMapper {
 
     @Mapping(target = "id", source = "uuid")

@@ -19,4 +19,8 @@ public class DriverResponse extends UserResponse {
     private Set<PassportResponse> passports;
 
     private Set<DriverLicenseResponse> driverLicenses;
+
+    private TaxiParkResponse taxiPark;
+
+    private DriverStatusResponse driverStatus;
 }

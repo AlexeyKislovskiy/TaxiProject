@@ -1,9 +1,6 @@
 package fertdt.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
@@ -38,6 +35,8 @@ public class CarClassEntity extends AbstractEntity {
     @Column(name = "kilometer_price", nullable = false)
     private Integer pricePerKilometer;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "carClass")
     private Set<CarEntity> cars;
 }

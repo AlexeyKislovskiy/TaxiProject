@@ -23,6 +23,8 @@ public class TaxiParkEntity extends AbstractEntity {
     @Column(name = "commission_percentage", nullable = false)
     private Double commissionPercentage;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "taxiPark")
     private Set<CarEntity> cars;
 

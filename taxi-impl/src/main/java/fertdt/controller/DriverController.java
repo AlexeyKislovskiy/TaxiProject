@@ -37,4 +37,14 @@ public class DriverController implements DriverApi {
     public void breakContractWithTaxiPark(UUID driverId) {
         driverService.breakContractWithTaxiPark(driverId);
     }
+
+    @Override
+    public void startWork(UUID driverId) {
+        driverService.startWork(driverId);
+    }
+
+    @Override
+    public void stopWork(UUID driverId) {
+        driverService.stopWork(driverId);
+    }
 }

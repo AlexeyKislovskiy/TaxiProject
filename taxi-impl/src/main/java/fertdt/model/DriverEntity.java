@@ -36,4 +36,9 @@ public class DriverEntity extends UserEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "driver_status")
     private DriverStatus driverStatus;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "driver")
+    private Set<CarUsingEntity> carUsing;
 }

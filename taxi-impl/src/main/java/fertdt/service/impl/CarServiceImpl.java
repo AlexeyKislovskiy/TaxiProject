@@ -4,8 +4,10 @@ import fertdt.dto.request.CarRequest;
 import fertdt.dto.request.PersonalCarRequest;
 import fertdt.dto.request.RentedCarRequest;
 import fertdt.dto.response.CarResponse;
+import fertdt.dto.response.DriverResponse;
 import fertdt.exception.duplicatedName.DuplicatedCarNumberException;
 import fertdt.exception.notFound.CarNotFoundException;
+import fertdt.exception.relationalshipConflict.TaxiParkOfDriverAndCarDifferentException;
 import fertdt.model.CarEntity;
 import fertdt.repository.CarRepository;
 import fertdt.service.CarCLassService;
@@ -33,7 +35,9 @@ public class CarServiceImpl implements CarService {
             throw new DuplicatedCarNumberException();
         });
         carRequestCheck(car);
-        driverService.getDriverById(car.getOwnerId());
+        DriverResponse driver = driverService.getDriverById(car.getOwnerId());
+        if (!taxiParkService.getTaxiParkById(car.getTaxiParkId()).equals(driver.getTaxiPark()))
+            throw new TaxiParkOfDriverAndCarDifferentException();
         return carRepository.save(carMapper.toEntity(car)).getUuid();
     }
 
@@ -68,7 +72,9 @@ public class CarServiceImpl implements CarService {
             });
         }
         carRequestCheck(car);
-        driverService.getDriverById(car.getOwnerId());
+        DriverResponse driver = driverService.getDriverById(car.getOwnerId());
+        if (!taxiParkService.getTaxiParkById(car.getTaxiParkId()).equals(driver.getTaxiPark()))
+            throw new TaxiParkOfDriverAndCarDifferentException();
         return carMapper.toResponse(carRepository.save(carMapper.toEntity(carEntity, car)));
     }
 

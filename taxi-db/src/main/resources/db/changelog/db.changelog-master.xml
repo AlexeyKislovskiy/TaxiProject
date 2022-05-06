@@ -24,5 +24,6 @@
     <include file="changesets/20220424-KP-4-add_privileges.xml" relativeToChangelogFile="true"/>
     <include file="changesets/20220504-KP-5-alter_driver_table.xml" relativeToChangelogFile="true"/>
     <include file="changesets/20220504-KP-5-alter_tables_change_on_delete.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220505-KP-6-create_car_using_table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

@@ -23,11 +23,19 @@ public interface DriverApi {
     @ResponseStatus(HttpStatus.ACCEPTED)
     void verifyDriverAccount(@PathVariable("driver-id") UUID driverId);
 
-    @PostMapping(value = "/contract/{driver-id}/{taxi-park-id}")
+    @PostMapping(value = "work/contract/{driver-id}/{taxi-park-id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     void signContractWithTaxiPark(@PathVariable("driver-id") UUID driverId, @PathVariable("taxi-park-id") UUID taxiParkId);
 
-    @DeleteMapping(value = "/contract/{driver-id}")
+    @DeleteMapping(value = "work/contract/{driver-id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     void breakContractWithTaxiPark(@PathVariable("driver-id") UUID driverId);
+
+    @PostMapping(value = "work/start/{driver-id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    void startWork(@PathVariable("driver-id") UUID driverId);
+
+    @DeleteMapping(value = "work/stop/{driver-id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    void stopWork(@PathVariable("driver-id") UUID driverId);
 }

@@ -1,7 +1,7 @@
 package fertdt.service.impl;
 
 import fertdt.dto.response.DriverResponse;
-import fertdt.exception.VerifiedException;
+import fertdt.exception.*;
 import fertdt.exception.deletion.DriverBreakContractException;
 import fertdt.exception.notFound.DriverNotFoundException;
 import fertdt.exception.relationalshipConflict.AccountAlreadyVerifiedException;
@@ -13,6 +13,8 @@ import fertdt.model.TaxiParkEntity;
 import fertdt.repository.DriverRepository;
 import fertdt.service.DriverService;
 import fertdt.service.TaxiParkService;
+import fertdt.util.CarUsingUtil;
+import fertdt.util.DriverStatusUtil;
 import fertdt.util.mapper.DriverMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -67,7 +69,7 @@ public class DriverServiceImpl implements DriverService {
         DriverEntity driver = driverRepository.findById(driverId).orElseThrow(DriverNotFoundException::new);
         taxiParkService.getTaxiParkById(taxiParkId);
         DriverStatus driverStatus = driver.getDriverStatus();
-        if (driverStatus.equals(DriverStatus.NO_REQUIRED_DOCUMENTS) || driverStatus.equals(DriverStatus.DOCUMENTS_NOT_VERIFIED))
+        if (!DriverStatusUtil.accountVerified(driver))
             throw new VerifiedException("Driver with an unverified documents cannot sign a contract");
         else if (driverStatus.equals(DriverStatus.NO_CONTRACT_WITH_TAXI_PARK)) {
             driver = setDriverStatus(driverId, DriverStatus.NOT_AT_WORK);
@@ -87,5 +89,31 @@ public class DriverServiceImpl implements DriverService {
             driver.setTaxiPark(null);
             driverRepository.save(driver);
         }
+    }
+
+    @Override
+    public void startWork(UUID driverId) {
+        DriverEntity driver = driverRepository.findById(driverId).orElseThrow(DriverNotFoundException::new);
+        if (DriverStatusUtil.canWork(driver)) {
+            if (driver.getDriverStatus().equals(DriverStatus.AT_WORK))
+                throw new DriverAtWorkException("Driver already at work");
+            if (CarUsingUtil.getCurrentCar(driver) == null)
+                throw new CarUsingException("Driver cannot start work without car");
+            setDriverStatus(driverId, DriverStatus.AT_WORK);
+        } else if (!DriverStatusUtil.accountVerified(driver))
+            throw new VerifiedException("Account not verified, cannot start work");
+        else throw new DriverHasNoContractException("Driver does not have a contract, cannot start work");
+    }
+
+    @Override
+    public void stopWork(UUID driverId) {
+        DriverEntity driver = driverRepository.findById(driverId).orElseThrow(DriverNotFoundException::new);
+        if (DriverStatusUtil.canWork(driver)) {
+            if (driver.getDriverStatus().equals(DriverStatus.NOT_AT_WORK))
+                throw new DriverNotAtWorkException("Driver already not at work");
+            setDriverStatus(driverId, DriverStatus.NOT_AT_WORK);
+        } else if (!DriverStatusUtil.accountVerified(driver))
+            throw new VerifiedException("Account not verified, cannot stop work");
+        else throw new DriverHasNoContractException("Driver does not have a contract, cannot stop work");
     }
 }

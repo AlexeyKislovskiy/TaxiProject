@@ -1,0 +1,51 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="001" author="fertdt">
+        <createTable tableName="car_using">
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_car_using"/>
+            </column>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="car_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_car_using_to_car"
+                             referencedTableName="car" referencedColumnNames="uuid" deleteCascade="true"/>
+            </column>
+            <column name="driver_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_car_using_to_driver"
+                             referencedTableName="driver" referencedColumnNames="uuid" deleteCascade="true"/>
+            </column>
+            <column name="to_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="002" author="fertdt">
+        <createTable tableName="payment_for_car_using">
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_payment_for_car_using"/>
+            </column>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="car_using_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_payment_for_car_using_to_car_using"
+                             referencedTableName="car_using" referencedColumnNames="uuid" deleteCascade="true"/>
+            </column>
+            <column name="rented_for_days" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cost" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payment_status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <sql>
+            ALTER TABLE payment_for_car_using
+                ADD CONSTRAINT payment_status_check CHECK (payment_status in
+                                                           ('PAID', 'NOT_PAID'));
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

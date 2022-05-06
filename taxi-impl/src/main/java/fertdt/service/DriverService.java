@@ -18,4 +18,8 @@ public interface DriverService {
     void signContractWithTaxiPark(UUID driverId, UUID taxiParkId);
 
     void breakContractWithTaxiPark(UUID driverId);
+
+    void startWork(UUID driverId);
+
+    void stopWork(UUID driverId);
 }

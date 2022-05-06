@@ -1,12 +1,10 @@
 package fertdt.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -42,10 +40,17 @@ public class CarEntity extends AbstractEntity {
     @JoinColumn(name = "taxi_park_id")
     private TaxiParkEntity taxiPark;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private DriverEntity owner;
 
     @Column(name = "daily_rental_price")
     private Integer dailyRentalPrice;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "car")
+    private Set<CarUsingEntity> carUsing;
 }

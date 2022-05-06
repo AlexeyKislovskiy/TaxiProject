@@ -6,6 +6,9 @@ import fertdt.dto.response.CarResponse;
 import fertdt.model.CarEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+
+import java.util.UUID;
 
 @Mapper(componentModel = "spring", uses = {DriverMapper.class, CarClassMapper.class, TaxiParkMapper.class})
 public interface CarMapper {
@@ -46,4 +49,9 @@ public interface CarMapper {
     @Mapping(target = "taxiPark", source = "carRequest.taxiParkId", qualifiedByName = "toTaxiParkEntityById")
     @Mapping(target = "dailyRentalPrice", source = "carRequest.dailyRentalPrice")
     CarEntity toEntity(CarEntity carEntity, RentedCarRequest carRequest);
+
+    @Named("toCarEntityById")
+    default CarEntity toCarEntityById(UUID id) {
+        return CarEntity.builder().uuid(id).build();
+    }
 }

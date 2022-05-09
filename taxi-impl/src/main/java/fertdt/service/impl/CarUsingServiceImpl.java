@@ -99,7 +99,6 @@ public class CarUsingServiceImpl implements CarUsingService {
             if (CarUsingUtil.getCurrentDriver(car) != null) throw new CarAlreadyInUseException();
             CarUsingEntity carUsing = carUsingMapper.toEntityFromRentedCarUsingRequest(carUsingRequest);
             carUsing = carUsingRepository.getById(carUsingRepository.save(carUsing).getUuid());
-            System.out.println(carUsing);
             paymentForCarUsingRepository.save(paymentForCarUsingMapper.toEntity(carUsing, carUsingRequest));
             return carUsing.getUuid();
         } else if (!DriverStatusUtil.accountVerified(driver))

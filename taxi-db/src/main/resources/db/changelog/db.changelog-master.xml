@@ -25,5 +25,11 @@
     <include file="changesets/20220504-KP-5-alter_driver_table.xml" relativeToChangelogFile="true"/>
     <include file="changesets/20220504-KP-5-alter_tables_change_on_delete.xml" relativeToChangelogFile="true"/>
     <include file="changesets/20220505-KP-6-create_car_using_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220508-KP-8-create_geographical_point_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220508-KP-8-create_payment_method_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220508-KP-8-create_taxi_ride_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220508-KP-8-create_additional_requirements_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220508-KP-8-create_complaint_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220509-KP-8-alter_rating_table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

@@ -5,6 +5,9 @@ import fertdt.dto.response.UserResponse;
 import fertdt.model.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+
+import java.util.UUID;
 
 @Mapper(componentModel = "spring", uses = {RoleMapper.class, RatingMapper.class})
 public interface UserMapper {
@@ -24,4 +27,9 @@ public interface UserMapper {
     @Mapping(target = "firstName", source = "userRequest.firstName")
     @Mapping(target = "lastName", source = "userRequest.lastName")
     UserEntity toEntity(UserEntity userEntity, UserExtendedRequest userRequest);
+
+    @Named("toUserEntityById")
+    default UserEntity toUserEntityById(UUID id) {
+        return UserEntity.builder().uuid(id).build();
+    }
 }

@@ -15,6 +15,12 @@ import javax.persistence.*;
 @Table(name = "rating")
 public class RatingEntity extends AbstractEntity {
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne
+    @JoinColumn(name = "taxi_ride_id")
+    private TaxiRideEntity taxiRide;
+
     @ManyToOne
     @JoinColumn(name = "rated_by_id", referencedColumnName = "uuid")
     private UserEntity ratedBy;

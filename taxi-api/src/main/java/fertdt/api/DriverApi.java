@@ -10,6 +10,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RequestMapping("/api/drivers")
 public interface DriverApi {
+
     @PostMapping(value = "/{user-id}")
     @ResponseStatus(HttpStatus.CREATED)
     void createDriverAccount(@PathVariable("user-id") UUID userId);

@@ -1,9 +1,6 @@
 package fertdt.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
@@ -28,4 +25,9 @@ public class TaxiParkEntity extends AbstractEntity {
 
     @OneToMany(mappedBy = "taxiPark")
     private Set<CarEntity> cars;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "taxiPark")
+    private Set<DriverEntity> drivers;
 }

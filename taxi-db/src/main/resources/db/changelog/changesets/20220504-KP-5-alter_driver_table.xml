@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="001" author="fertdt">
+        <addColumn tableName="driver">
+            <column name="taxi_park_id" type="uuid">
+                <constraints nullable="true" foreignKeyName="fk_driver_to_taxi_park"
+                             referencedTableName="taxi_park" referencedColumnNames="uuid"/>
+            </column>
+            <column name="driver_status" type="VARCHAR(255)" defaultValue="NO_REQUIRED_DOCUMENTS">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <sql>
+            ALTER TABLE driver
+                ADD CONSTRAINT driver_status_check CHECK (driver_status in
+                                                          ('NO_REQUIRED_DOCUMENTS', 'DOCUMENTS_NOT_VERIFIED',
+                                                           'NO_CONTRACT_WITH_TAXI_PARK', 'NOT_AT_WORK', 'AT_WORK'));
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -42,4 +42,8 @@ public class UserEntity extends AbstractEntity {
     )
     private Set<RoleEntity> roles;
 
+    @ManyToOne
+    @JoinColumn(name = "current_geographical_point_id", referencedColumnName = "uuid")
+    private GeographicalPointEntity currentLocation;
+
 }

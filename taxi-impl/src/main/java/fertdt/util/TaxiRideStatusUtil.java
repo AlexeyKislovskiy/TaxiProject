@@ -17,4 +17,8 @@ public class TaxiRideStatusUtil {
                 taxiRide.getTaxiRideStatus().equals(TaxiRideStatus.WAITING_FOR_DRIVER_ARRIVING) ||
                 taxiRide.getTaxiRideStatus().equals(TaxiRideStatus.WAITING_FOR_CLIENT);
     }
+
+    public static boolean cancellableByDriver(TaxiRideEntity taxiRide) {
+        return taxiRide.getTaxiRideStatus().equals(TaxiRideStatus.WAITING_FOR_CLIENT);
+    }
 }

@@ -1,6 +1,7 @@
 package fertdt.controller;
 
 import fertdt.api.GeographicalPointApi;
+import fertdt.dto.request.GeographicalCoordinatesRequest;
 import fertdt.dto.response.GeographicalPointResponse;
 import fertdt.service.GeographicalPointService;
 import lombok.RequiredArgsConstructor;

@@ -1,20 +1,20 @@
 package fertdt.service.impl;
 
 
-import fertdt.dto.enums.Privilege;
 import fertdt.dto.enums.Role;
+import fertdt.dto.request.GeographicalCoordinatesRequest;
 import fertdt.dto.request.UserExtendedRequest;
 import fertdt.dto.request.UserRequest;
 import fertdt.dto.response.UserResponse;
 import fertdt.exception.UnauthorizedException;
 import fertdt.exception.duplicatedName.DuplicatedUsernameException;
 import fertdt.exception.notFound.UserNotFoundException;
-import fertdt.model.PrivilegeEntity;
-import fertdt.model.RoleEntity;
+import fertdt.model.GeographicalPointEntity;
 import fertdt.model.UserEntity;
 import fertdt.repository.PrivilegeRepository;
 import fertdt.repository.RoleRepository;
 import fertdt.repository.UserRepository;
+import fertdt.service.GeographicalPointService;
 import fertdt.service.UserService;
 import fertdt.util.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -35,6 +34,7 @@ public class UserServiceImpl implements UserService {
     private final PrivilegeRepository privilegeRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final GeographicalPointService geographicalPointService;
 
     @Override
     public UUID createUser(UserExtendedRequest user) {
@@ -86,5 +86,13 @@ public class UserServiceImpl implements UserService {
                 .filter(user -> passwordEncoder.matches(request.getPassword(), user.getHashPassword()))
                 .map(userMapper::toResponse)
                 .orElseThrow(() -> new UnauthorizedException("Failed to log in: " + request.getUsername()));
+    }
+
+    @Override
+    public void updateCurrentLocation(UUID userId, GeographicalCoordinatesRequest geographicalCoordinatesRequest) {
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        GeographicalPointEntity geographicalPoint = geographicalPointService.getGeographicalPointFromCoordinates(geographicalCoordinatesRequest);
+        userEntity.setCurrentLocation(geographicalPoint);
+        userRepository.save(userEntity);
     }
 }

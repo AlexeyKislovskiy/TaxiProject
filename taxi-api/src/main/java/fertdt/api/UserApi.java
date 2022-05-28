@@ -1,14 +1,15 @@
 package fertdt.api;
 
+import fertdt.dto.request.GeographicalCoordinatesRequest;
 import fertdt.dto.request.UserExtendedRequest;
 import fertdt.dto.request.UserRequest;
 import fertdt.dto.response.TokenCoupleResponse;
 import fertdt.dto.response.UserResponse;
-import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -35,4 +36,9 @@ public interface UserApi {
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     TokenCoupleResponse login(@RequestBody UserRequest userRequest);
+
+
+    @PutMapping(value = "/location/{user-id}", consumes = APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    void updateCurrentLocation(@PathVariable("user-id") UUID userId, @Valid @RequestBody GeographicalCoordinatesRequest geographicalCoordinatesRequest);
 }

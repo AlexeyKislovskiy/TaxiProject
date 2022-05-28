@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface TaxiRideRepository extends JpaRepository<TaxiRideEntity, UUID> {
     Set<TaxiRideEntity> findAllByPassenger_Uuid(UUID passengerId);
+
+    Set<TaxiRideEntity> findAllByDriver_Uuid(UUID driverId);
 }

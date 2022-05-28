@@ -10,6 +10,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -100,5 +101,12 @@ public class TaxiRideEntity extends AbstractEntity {
     @Where(clause = "status='DRIVER_TO_PASSENGER'")
     @OneToMany(mappedBy = "taxiRide")
     private List<ComplaintEntity> complaintsToPassenger;
+
+    @ManyToMany
+    @JoinTable(
+            name = "driver_taxi_ride_notification",
+            joinColumns = @JoinColumn(name = "taxi_ride_id", referencedColumnName = "uuid"),
+            inverseJoinColumns = @JoinColumn(name = "driver_id", referencedColumnName = "uuid"))
+    private Set<DriverEntity> notifications;
 
 }

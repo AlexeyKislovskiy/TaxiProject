@@ -116,4 +116,9 @@ public class DriverServiceImpl implements DriverService {
             throw new VerifiedException("Account not verified, cannot stop work");
         else throw new DriverHasNoContractException("Driver does not have a contract, cannot stop work");
     }
+
+    @Override
+    public DriverEntity getDriverEntityById(UUID driverId) {
+        return driverRepository.findById(driverId).orElseThrow(DriverNotFoundException::new);
+    }
 }

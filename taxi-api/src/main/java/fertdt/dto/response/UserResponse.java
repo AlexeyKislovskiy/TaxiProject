@@ -24,4 +24,6 @@ public class UserResponse {
     private String lastName;
 
     private Double ratingAsPassenger;
+
+    private GeographicalPointResponse currentLocation;
 }

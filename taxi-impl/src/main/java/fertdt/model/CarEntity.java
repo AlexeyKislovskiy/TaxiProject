@@ -33,11 +33,11 @@ public class CarEntity extends AbstractEntity {
     private Integer manufactureYear;
 
     @ManyToOne
-    @JoinColumn(name = "car_class_id")
+    @JoinColumn(name = "car_class_id", nullable = false)
     private CarClassEntity carClass;
 
     @ManyToOne
-    @JoinColumn(name = "taxi_park_id")
+    @JoinColumn(name = "taxi_park_id", nullable = false)
     private TaxiParkEntity taxiPark;
 
     @ToString.Exclude

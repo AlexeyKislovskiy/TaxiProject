@@ -31,5 +31,8 @@
     <include file="changesets/20220508-KP-8-create_additional_requirements_table.xml" relativeToChangelogFile="true"/>
     <include file="changesets/20220508-KP-8-create_complaint_table.xml" relativeToChangelogFile="true"/>
     <include file="changesets/20220509-KP-8-alter_rating_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220522-KP-9-alter_user_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220523-KP-9-create_driver_taxi_ride_notification_table.xml"
+             relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

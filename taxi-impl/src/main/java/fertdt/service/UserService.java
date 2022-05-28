@@ -1,5 +1,6 @@
 package fertdt.service;
 
+import fertdt.dto.request.GeographicalCoordinatesRequest;
 import fertdt.dto.request.UserExtendedRequest;
 import fertdt.dto.request.UserRequest;
 import fertdt.dto.response.UserResponse;
@@ -17,4 +18,6 @@ public interface UserService extends AccountService{
     UserResponse updateUserById(UUID userId, UserExtendedRequest user);
 
     UserResponse login(UserRequest request);
+
+    void updateCurrentLocation(UUID userId, GeographicalCoordinatesRequest geographicalCoordinatesRequest);
 }

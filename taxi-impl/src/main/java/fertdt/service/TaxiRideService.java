@@ -16,15 +16,7 @@ public interface TaxiRideService {
 
     TaxiRideResponse getTaxiRideById(UUID taxiRideId);
 
-    TaxiRideEntity getCurrentTaxiRideForUser(UUID userId);
-
-    boolean userHasUnfinishedTrip(UUID userId);
-
     void takeOrder(UUID driverId, UUID taxiRideId);
-
-    TaxiRideEntity getCurrentTaxiRideForDriver(UUID driverId);
-
-    boolean driverHasUnfinishedTrip(UUID driverId);
 
     List<DriverResponse> findAllFreeDrivers(TaxiRideEntity taxiRide);
 
@@ -39,4 +31,6 @@ public interface TaxiRideService {
     UUID startTrip(UUID driverId);
 
     UUID cancelTrip(UUID driverId);
+
+    UUID finishTrip(UUID driverId);
 }

@@ -58,4 +58,10 @@ public class TaxiRideController implements TaxiRideApi {
         UUID taxiRideId = taxiRideService.cancelTrip(driverId);
         notificationService.notifyPassengerAboutChangeCallStatus(taxiRideId);
     }
+
+    @Override
+    public void finishTrip(UUID driverId) {
+        UUID taxiRideId = taxiRideService.finishTrip(driverId);
+        notificationService.notifyPassengerAboutChangeCallStatus(taxiRideId);
+    }
 }

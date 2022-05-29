@@ -6,6 +6,7 @@ import fertdt.exception.deletion.DriverBreakContractException;
 import fertdt.exception.notFound.DriverNotFoundException;
 import fertdt.exception.relationalshipConflict.AccountAlreadyVerifiedException;
 import fertdt.exception.relationalshipConflict.DriverAlreadySignedContractException;
+import fertdt.exception.relationalshipConflict.DriverHasUnfinishedTripAsPassengerException;
 import fertdt.exception.relationalshipConflict.UserAlreadyHasDriverAccountException;
 import fertdt.model.DriverEntity;
 import fertdt.model.DriverStatus;
@@ -13,6 +14,7 @@ import fertdt.model.TaxiParkEntity;
 import fertdt.repository.DriverRepository;
 import fertdt.service.DriverService;
 import fertdt.service.TaxiParkService;
+import fertdt.service.UserTaxiRideService;
 import fertdt.util.CarUsingUtil;
 import fertdt.util.DriverStatusUtil;
 import fertdt.util.mapper.DriverMapper;
@@ -28,6 +30,7 @@ public class DriverServiceImpl implements DriverService {
     private final DriverMapper driverMapper;
     private final UserServiceImpl userService;
     private final TaxiParkService taxiParkService;
+    private final UserTaxiRideService userTaxiRideService;
 
     @Override
     public void createDriverAccount(UUID userId) {
@@ -99,6 +102,8 @@ public class DriverServiceImpl implements DriverService {
                 throw new DriverAtWorkException("Driver already at work");
             if (CarUsingUtil.getCurrentCar(driver) == null)
                 throw new CarUsingException("Driver cannot start work without car");
+            if (userTaxiRideService.userHasUnfinishedTrip(driverId))
+                throw new DriverHasUnfinishedTripAsPassengerException();
             setDriverStatus(driverId, DriverStatus.AT_WORK);
         } else if (!DriverStatusUtil.accountVerified(driver))
             throw new VerifiedException("Account not verified, cannot start work");

@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -40,6 +40,7 @@ public class TaxiRideServiceImpl implements TaxiRideService {
     private final AdditionalRequirementsService additionalRequirementsService;
     private final DriverRepository driverRepository;
     private final DriverService driverService;
+    private final UserTaxiRideService userTaxiRideService;
 
     @Override
     public UUID callTaxi(TaxiCallRequest taxiCallRequest) {
@@ -47,7 +48,14 @@ public class TaxiRideServiceImpl implements TaxiRideService {
         userService.getUserById(taxiCall.getPassengerId());
         carCLassService.getClassCarById(taxiCall.getCarClassId());
         paymentMethodService.getPaymentMethodById(taxiCall.getPaymentMethodId());
-        if (userHasUnfinishedTrip(taxiCall.getPassengerId())) throw new UserHasUnfinishedTripException();
+        if (userTaxiRideService.userHasUnfinishedTrip(taxiCall.getPassengerId()))
+            throw new UserHasUnfinishedTripException();
+        Optional<DriverEntity> optionalDriver = driverRepository.findById(taxiCall.getPassengerId());
+        if (optionalDriver.isPresent()) {
+            DriverEntity driver = optionalDriver.get();
+            if (driver.getDriverStatus().equals(DriverStatus.AT_WORK))
+                throw new DriverAtWorkException("Cannot call taxi as passenger while at work as driver");
+        }
         TaxiRideEntity taxiRide = taxiRideMapper.toEntity(taxiCallRequest);
         List<GeographicalPointEntity> allGeographicalPoints = new ArrayList<>();
         taxiRide.setStartingPoint(geographicalPointService.getGeographicalPointFromCoordinates(taxiCall.getStartingPoint()));
@@ -69,7 +77,7 @@ public class TaxiRideServiceImpl implements TaxiRideService {
     @Override
     public UUID cancelTaxiCall(UUID userId) {
         userService.getUserById(userId);
-        TaxiRideEntity taxiRide = getCurrentTaxiRideForUser(userId);
+        TaxiRideEntity taxiRide = userTaxiRideService.getCurrentTaxiRideForUser(userId);
         if (taxiRide == null) throw new CancelTaxiCallException("User does not have an active trip");
         if (!TaxiRideStatusUtil.cancellableByPassenger(taxiRide))
             throw new CancelTaxiCallException("User cannot cancel trip in progress");
@@ -86,20 +94,6 @@ public class TaxiRideServiceImpl implements TaxiRideService {
     }
 
     @Override
-    public TaxiRideEntity getCurrentTaxiRideForUser(UUID userId) {
-        Set<TaxiRideEntity> taxiRides = taxiRideRepository.findAllByPassenger_Uuid(userId);
-        for (TaxiRideEntity taxiRide : taxiRides) {
-            if (!TaxiRideStatusUtil.tripIsOver(taxiRide)) return taxiRide;
-        }
-        return null;
-    }
-
-    @Override
-    public boolean userHasUnfinishedTrip(UUID userId) {
-        return getCurrentTaxiRideForUser(userId) != null;
-    }
-
-    @Override
     public void takeOrder(UUID driverId, UUID taxiRideId) {
         TaxiRideEntity taxiRide = taxiRideRepository.findById(taxiRideId).orElseThrow(TaxiRideNotFoundException::new);
         DriverEntity driver = driverRepository.findById(driverId).orElseThrow(DriverNotFoundException::new);
@@ -108,7 +102,7 @@ public class TaxiRideServiceImpl implements TaxiRideService {
         if (DriverStatusUtil.canWork(driver)) {
             if (driver.getDriverStatus().equals(DriverStatus.NOT_AT_WORK))
                 throw new DriverNotAtWorkException("Driver not at work, cannot take order");
-            if (driverHasUnfinishedTrip(driverId)) throw new DriverHasUnfinishedTripException();
+            if (userTaxiRideService.driverHasUnfinishedTrip(driverId)) throw new DriverHasUnfinishedTripException();
             CarEntity car = CarUsingUtil.getCurrentCar(driver);
             if (car == null) throw new CarUsingException("Driver cannot take order without car");
             if (!car.getCarClass().equals(taxiRide.getCarClass())) throw new CarClassNotAppropriateException();
@@ -123,23 +117,9 @@ public class TaxiRideServiceImpl implements TaxiRideService {
     }
 
     @Override
-    public TaxiRideEntity getCurrentTaxiRideForDriver(UUID driverId) {
-        Set<TaxiRideEntity> taxiRides = taxiRideRepository.findAllByDriver_Uuid(driverId);
-        for (TaxiRideEntity taxiRide : taxiRides) {
-            if (!TaxiRideStatusUtil.tripIsOver(taxiRide)) return taxiRide;
-        }
-        return null;
-    }
-
-    @Override
-    public boolean driverHasUnfinishedTrip(UUID driverId) {
-        return getCurrentTaxiRideForDriver(driverId) != null;
-    }
-
-    @Override
     public List<DriverResponse> findAllFreeDrivers(TaxiRideEntity taxiRide) {
         List<DriverEntity> drivers = driverRepository.findAllByDriverStatus(DriverStatus.AT_WORK);
-        return drivers.stream().filter(driver -> driver.getCurrentLocation() != null && !driverHasUnfinishedTrip(driver.getUuid())
+        return drivers.stream().filter(driver -> driver.getCurrentLocation() != null && !userTaxiRideService.driverHasUnfinishedTrip(driver.getUuid())
                         && carFitsCall(CarUsingUtil.getCurrentCar(driver), taxiRide))
                 .map(driver -> driverService.getDriverById(driver.getUuid())).collect(Collectors.toList());
     }
@@ -169,7 +149,7 @@ public class TaxiRideServiceImpl implements TaxiRideService {
     @Override
     public UUID arriveToClient(UUID driverId) {
         driverRepository.findById(driverId).orElseThrow(DriverNotFoundException::new);
-        TaxiRideEntity taxiRide = getCurrentTaxiRideForDriver(driverId);
+        TaxiRideEntity taxiRide = userTaxiRideService.getCurrentTaxiRideForDriver(driverId);
         if (taxiRide == null)
             throw new DriverHasNotCurrentTripException("Driver has not a current trip, it is impossible to arrive to client");
         if (!taxiRide.getTaxiRideStatus().equals(TaxiRideStatus.WAITING_FOR_DRIVER_ARRIVING))
@@ -183,7 +163,7 @@ public class TaxiRideServiceImpl implements TaxiRideService {
     @Override
     public UUID startTrip(UUID driverId) {
         driverRepository.findById(driverId).orElseThrow(DriverNotFoundException::new);
-        TaxiRideEntity taxiRide = getCurrentTaxiRideForDriver(driverId);
+        TaxiRideEntity taxiRide = userTaxiRideService.getCurrentTaxiRideForDriver(driverId);
         if (taxiRide == null)
             throw new DriverHasNotCurrentTripException("Driver has not a current trip, it is impossible to start trip");
         if (!taxiRide.getTaxiRideStatus().equals(TaxiRideStatus.WAITING_FOR_CLIENT))
@@ -207,11 +187,25 @@ public class TaxiRideServiceImpl implements TaxiRideService {
     @Override
     public UUID cancelTrip(UUID driverId) {
         driverRepository.findById(driverId).orElseThrow(DriverNotFoundException::new);
-        TaxiRideEntity taxiRide = getCurrentTaxiRideForDriver(driverId);
+        TaxiRideEntity taxiRide = userTaxiRideService.getCurrentTaxiRideForDriver(driverId);
         if (taxiRide == null) throw new CancelTripException("Driver does not have an active trip");
         if (!TaxiRideStatusUtil.cancellableByDriver(taxiRide))
             throw new CancelTripException("Driver cannot cancel trip in progress or before arriving to passenger");
         taxiRide.setTaxiRideStatus(TaxiRideStatus.TRIP_CANCELED_BY_DRIVER);
+        taxiRideRepository.save(taxiRide);
+        return taxiRide.getUuid();
+    }
+
+    @Override
+    public UUID finishTrip(UUID driverId) {
+        driverRepository.findById(driverId).orElseThrow(DriverNotFoundException::new);
+        TaxiRideEntity taxiRide = userTaxiRideService.getCurrentTaxiRideForDriver(driverId);
+        if (taxiRide == null)
+            throw new DriverHasNotCurrentTripException("Driver has not a current trip, it is impossible to finish trip");
+        if (!taxiRide.getTaxiRideStatus().equals(TaxiRideStatus.TRIP_IN_PROGRESS))
+            throw new TaxiRideException("Cannot finish trip, because order status is not trip in progress");
+        taxiRide.setTripFinishTime(Instant.now());
+        taxiRide.setTaxiRideStatus(TaxiRideStatus.TRIP_IS_OVER);
         taxiRideRepository.save(taxiRide);
         return taxiRide.getUuid();
     }

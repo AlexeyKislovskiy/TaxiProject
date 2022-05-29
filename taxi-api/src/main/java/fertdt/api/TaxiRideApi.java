@@ -40,4 +40,8 @@ public interface TaxiRideApi {
     @DeleteMapping(value = "/{driver-id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     void cancelTrip(@PathVariable("driver-id") UUID driverId);
+
+    @PostMapping("/finish/{driver-id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    void finishTrip(@PathVariable("driver-id") UUID driverId);
 }

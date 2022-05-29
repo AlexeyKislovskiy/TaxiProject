@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="001" author="fertdt">
+        <dropForeignKeyConstraint baseTableName="taxi_ride" constraintName="fk_taxi_ride_passenger"/>
+        <addForeignKeyConstraint baseTableName="taxi_ride" baseColumnNames="passenger_id"
+                                 constraintName="fk_taxi_ride_passenger"
+                                 referencedTableName="account" referencedColumnNames="uuid"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="002" author="fertdt">
+        <dropForeignKeyConstraint baseTableName="taxi_ride_intermediate_points" constraintName="fk_taxi_ride_intermediate_points_to_taxi_ride"/>
+        <addForeignKeyConstraint baseTableName="taxi_ride_intermediate_points" baseColumnNames="taxi_ride_id"
+                                 constraintName="fk_taxi_ride_intermediate_points_to_taxi_ride"
+                                 referencedTableName="taxi_ride" referencedColumnNames="uuid"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

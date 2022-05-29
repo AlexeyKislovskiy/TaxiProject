@@ -32,7 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/token/user-info",
             "/api/token/refresh",
             //Временно разрешу все запросы
-            "/api/**"
+            "/api/**",
+            "/**"
     };
 
     private static final String[] IGNORE = {

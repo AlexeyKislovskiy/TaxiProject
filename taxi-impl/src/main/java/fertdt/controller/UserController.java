@@ -1,6 +1,7 @@
 package fertdt.controller;
 
 import fertdt.api.UserApi;
+import fertdt.dto.request.GeographicalCoordinatesRequest;
 import fertdt.dto.request.UserExtendedRequest;
 import fertdt.dto.request.UserRequest;
 import fertdt.dto.response.TokenCoupleResponse;
@@ -42,5 +43,10 @@ public class UserController implements UserApi {
     @Override
     public TokenCoupleResponse login(UserRequest userRequest) {
         return tokenService.generateTokenCouple(userService.login(userRequest));
+    }
+
+    @Override
+    public void updateCurrentLocation(UUID userId, GeographicalCoordinatesRequest geographicalCoordinatesRequest) {
+        userService.updateCurrentLocation(userId, geographicalCoordinatesRequest);
     }
 }

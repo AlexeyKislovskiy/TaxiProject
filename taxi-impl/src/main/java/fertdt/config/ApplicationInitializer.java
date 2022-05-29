@@ -20,6 +20,7 @@ public class ApplicationInitializer implements WebApplicationInitializer {
         springWebContext.register(WebMvcConfig.class);
         springWebContext.register(DataBaseConfig.class);
         springWebContext.register(SwaggerConfig.class);
+        springWebContext.register(WebSocketConfig.class);
         servletContext.addListener(new ContextLoaderListener(springWebContext));
 
         ServletRegistration.Dynamic dispatcherServlet =

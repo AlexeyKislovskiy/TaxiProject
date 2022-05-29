@@ -9,7 +9,7 @@ import org.mapstruct.Named;
 
 import java.util.UUID;
 
-@Mapper(componentModel = "spring", uses = {RoleMapper.class, RatingMapper.class})
+@Mapper(componentModel = "spring", uses = {RoleMapper.class, RatingMapper.class, GeographicalPointMapper.class})
 public interface UserMapper {
 
     @Mapping(target = "uuid", ignore = true)

@@ -22,4 +22,6 @@ public interface DriverService {
     void startWork(UUID driverId);
 
     void stopWork(UUID driverId);
+
+    DriverEntity getDriverEntityById(UUID driverId);
 }

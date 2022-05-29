@@ -98,8 +98,6 @@ public class TripPredictionServiceImpl implements TripPredictionService {
     private Integer getPredictedDriverWaitingTime(UpcomingTaxiCallRequest taxiCallRequest) {
         GeographicalPointResponse driverLocation = navigationService.findLocationOfNearestDriver(taxiCallRequest);
         if (driverLocation == null) return null;
-        Map<String, String> uriVariables = new HashMap<>();
-        uriVariables.put(ACCESS_TOKEN_PARAMETER, mapboxAccessToken);
         GeographicalCoordinatesRequest driverCoordinates = GeographicalCoordinatesRequest.builder()
                 .longitude(driverLocation.getLongitude())
                 .latitude(driverLocation.getLatitude())

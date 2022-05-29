@@ -34,7 +34,7 @@ public class TaxiRideServiceImpl implements TaxiRideService {
     private final TaxiRideRepository taxiRideRepository;
     private final TaxiRideMapper taxiRideMapper;
     private final UserService userService;
-    private final CarCLassService carCLassService;
+    private final CarClassService carClassService;
     private final PaymentMethodService paymentMethodService;
     private final GeographicalPointService geographicalPointService;
     private final AdditionalRequirementsService additionalRequirementsService;
@@ -46,7 +46,7 @@ public class TaxiRideServiceImpl implements TaxiRideService {
     public UUID callTaxi(TaxiCallRequest taxiCallRequest) {
         UpcomingTaxiCallRequest taxiCall = taxiCallRequest.getTaxiCall();
         userService.getUserById(taxiCall.getPassengerId());
-        carCLassService.getClassCarById(taxiCall.getCarClassId());
+        carClassService.getClassCarById(taxiCall.getCarClassId());
         paymentMethodService.getPaymentMethodById(taxiCall.getPaymentMethodId());
         if (userTaxiRideService.userHasUnfinishedTrip(taxiCall.getPassengerId()))
             throw new UserHasUnfinishedTripException();
@@ -125,6 +125,14 @@ public class TaxiRideServiceImpl implements TaxiRideService {
     }
 
     @Override
+    public List<DriverResponse> findAllFreeDrivers(UpcomingTaxiCallRequest taxiCallRequest) {
+        List<DriverEntity> drivers = driverRepository.findAllByDriverStatus(DriverStatus.AT_WORK);
+        return drivers.stream().filter(driver -> driver.getCurrentLocation() != null && !userTaxiRideService.driverHasUnfinishedTrip(driver.getUuid())
+                        && carFitsCall(CarUsingUtil.getCurrentCar(driver), taxiCallRequest))
+                .map(driver -> driverService.getDriverById(driver.getUuid())).collect(Collectors.toList());
+    }
+
+    @Override
     public boolean carFitsCall(CarEntity car, TaxiRideEntity taxiRide) {
         if (car == null) return false;
         else if (!car.getCarClass().equals(taxiRide.getCarClass())) return false;
@@ -132,6 +140,18 @@ public class TaxiRideServiceImpl implements TaxiRideService {
         else if (taxiRide.getAdditionalRequirements().getSeatsNumber() != null && taxiRide.getAdditionalRequirements().getSeatsNumber() > car.getSeatsNumber())
             return false;
         else if (taxiRide.getAdditionalRequirements().getChildSeatsNumber() != null && taxiRide.getAdditionalRequirements().getChildSeatsNumber() > car.getChildSeatsNumber())
+            return false;
+        else return true;
+    }
+
+    @Override
+    public boolean carFitsCall(CarEntity car, UpcomingTaxiCallRequest taxiCallRequest) {
+        if (car == null) return false;
+        else if (!car.getCarClass().getUuid().equals(taxiCallRequest.getCarClassId())) return false;
+        else if (taxiCallRequest.getAdditionalRequirements() == null) return true;
+        else if (taxiCallRequest.getAdditionalRequirements().getSeatsNumber() != null && taxiCallRequest.getAdditionalRequirements().getSeatsNumber() > car.getSeatsNumber())
+            return false;
+        else if (taxiCallRequest.getAdditionalRequirements().getChildSeatsNumber() != null && taxiCallRequest.getAdditionalRequirements().getChildSeatsNumber() > car.getChildSeatsNumber())
             return false;
         else return true;
     }

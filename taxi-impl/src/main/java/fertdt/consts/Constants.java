@@ -19,4 +19,10 @@ public interface Constants {
     String ACCESS_TOKEN_PARAMETER = "access_token";
     String LONGITUDE_PARAMETER = "longitude";
     String LATITUDE_PARAMETER = "latitude";
+
+    String ORDERED_TRIP_PREDICTION_URI = "https://api.mapbox.com/directions-matrix/v1/mapbox/driving/{coordinates}?" +
+            "annotations=distance,duration&access_token={access_token}";
+    String OPTIMIZED_TRIP_PREDICTION_URI = "https://api.mapbox.com/optimized-trips/v1/mapbox/driving/{coordinates}?" +
+            "source=first&destination=last&roundtrip=false&access_token={access_token}";
+    String COORDINATES_PARAMETER = "coordinates";
 }

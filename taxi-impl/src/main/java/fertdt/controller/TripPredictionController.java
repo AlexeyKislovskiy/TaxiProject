@@ -7,6 +7,8 @@ import fertdt.service.TripPredictionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 public class TripPredictionController implements TripPredictionApi {
@@ -15,5 +17,10 @@ public class TripPredictionController implements TripPredictionApi {
     @Override
     public PredictedTripDto predictTrip(UpcomingTaxiCallRequest taxiCallRequest) {
         return tripPredictionService.predictTrip(taxiCallRequest);
+    }
+
+    @Override
+    public Integer predictTimeToDriverArriving(UUID userId) {
+        return tripPredictionService.predictTimeToDriver(userId);
     }
 }

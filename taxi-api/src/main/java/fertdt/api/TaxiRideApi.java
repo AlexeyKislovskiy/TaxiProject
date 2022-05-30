@@ -13,7 +13,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequestMapping("/api/taxi-call")
 public interface TaxiRideApi {
 
-    @PostMapping(value = "/call", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/call", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
     UUID callTaxi(@Valid @RequestBody TaxiCallRequest taxiCallRequest);
 

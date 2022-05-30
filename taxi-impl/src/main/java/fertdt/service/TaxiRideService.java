@@ -1,6 +1,7 @@
 package fertdt.service;
 
 import fertdt.dto.request.TaxiCallRequest;
+import fertdt.dto.request.UpcomingTaxiCallRequest;
 import fertdt.dto.response.DriverResponse;
 import fertdt.dto.response.TaxiRideResponse;
 import fertdt.model.CarEntity;
@@ -20,7 +21,11 @@ public interface TaxiRideService {
 
     List<DriverResponse> findAllFreeDrivers(TaxiRideEntity taxiRide);
 
+    List<DriverResponse> findAllFreeDrivers(UpcomingTaxiCallRequest taxiCallRequest);
+
     boolean carFitsCall(CarEntity car, TaxiRideEntity taxiRide);
+
+    boolean carFitsCall(CarEntity car, UpcomingTaxiCallRequest taxiCallRequest);
 
     TaxiRideEntity getTaxiRideEntityById(UUID taxiRideId);
 

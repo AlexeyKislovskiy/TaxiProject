@@ -10,7 +10,7 @@ import fertdt.exception.notFound.CarNotFoundException;
 import fertdt.exception.relationalshipConflict.TaxiParkOfDriverAndCarDifferentException;
 import fertdt.model.CarEntity;
 import fertdt.repository.CarRepository;
-import fertdt.service.CarCLassService;
+import fertdt.service.CarClassService;
 import fertdt.service.CarService;
 import fertdt.service.DriverService;
 import fertdt.service.TaxiParkService;
@@ -25,7 +25,7 @@ import java.util.UUID;
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final CarMapper carMapper;
-    private final CarCLassService carCLassService;
+    private final CarClassService carClassService;
     private final TaxiParkService taxiParkService;
     private final DriverService driverService;
 
@@ -91,7 +91,7 @@ public class CarServiceImpl implements CarService {
     }
 
     private void carRequestCheck(CarRequest car) {
-        carCLassService.getClassCarById(car.getCarClassId());
+        carClassService.getClassCarById(car.getCarClassId());
         taxiParkService.getTaxiParkById(car.getTaxiParkId());
     }
 }

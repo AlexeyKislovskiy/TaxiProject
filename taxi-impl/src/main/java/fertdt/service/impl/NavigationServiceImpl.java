@@ -1,7 +1,9 @@
 package fertdt.service.impl;
 
 import fertdt.dto.request.NearestDriversRequest;
+import fertdt.dto.request.UpcomingTaxiCallRequest;
 import fertdt.dto.response.DriverResponse;
+import fertdt.dto.response.GeographicalPointResponse;
 import fertdt.model.TaxiRideEntity;
 import fertdt.service.NavigationService;
 import fertdt.service.TaxiRideService;
@@ -26,5 +28,14 @@ public class NavigationServiceImpl implements NavigationService {
                         a.getCurrentLocation().getLongitude(), taxiRide.getStartingPoint().getLatitude(),
                         taxiRide.getStartingPoint().getLongitude())))
                 .limit(nearestDriversRequest.getLimit()).collect(Collectors.toSet());
+    }
+
+    @Override
+    public GeographicalPointResponse findLocationOfNearestDriver(UpcomingTaxiCallRequest taxiCallRequest) {
+        DriverResponse driverResponse = taxiRideService.findAllFreeDrivers(taxiCallRequest).stream()
+                .min(Comparator.comparingDouble(a -> NavigationUtil.distance(a.getCurrentLocation().getLatitude(),
+                a.getCurrentLocation().getLongitude(), taxiCallRequest.getStartingPoint().getLatitude(),
+                taxiCallRequest.getStartingPoint().getLongitude()))).orElse(new DriverResponse());
+        return driverResponse.getCurrentLocation();
     }
 }

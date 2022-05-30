@@ -15,7 +15,7 @@
         }
 
         function connect() {
-            var socket = new SockJS('/new-call');
+            var socket = new SockJS('/chat');
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function (frame) {
                 setConnected(true);
@@ -25,6 +25,9 @@
                 });
                 stompClient.subscribe('/notification/passengers/' + document.getElementById('from').value, function (messageOutput) {
                     showMessageOutput(JSON.parse(messageOutput.body));
+                });
+                stompClient.subscribe('/chat/' + document.getElementById('from').value, function (messageOutput) {
+                    showChatMessageOutput(JSON.parse(messageOutput.body));
                 });
             });
         }
@@ -40,7 +43,11 @@
         function sendMessage() {
             var from = document.getElementById('from').value;
             var text = document.getElementById('text').value;
-            stompClient.send("/api/notification/call", {}, text);
+            let message = {
+                "text": text,
+                "userId": from
+            }
+            stompClient.send("/api/chat", {}, JSON.stringify(message));
         }
 
         function showMessageOutput(messageOutput) {
@@ -48,6 +55,14 @@
             var p = document.createElement('p');
             p.style.wordWrap = 'break-word';
             p.appendChild(document.createTextNode("Starting point: " + messageOutput.startingPoint.name + "; destination: " + messageOutput.destination.name));
+            response.appendChild(p);
+        }
+
+        function showChatMessageOutput(messageOutput) {
+            var response = document.getElementById('response');
+            var p = document.createElement('p');
+            p.style.wordWrap = 'break-word';
+            p.appendChild(document.createTextNode("Time: " + messageOutput.time + "; text: " + messageOutput.text + "; userId: " + messageOutput.userId));
             response.appendChild(p);
         }
     </script>

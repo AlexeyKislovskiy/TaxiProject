@@ -44,14 +44,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ExceptionResponse> handleApiException(ApiException e) {
-        e.printStackTrace();
-        return ResponseEntity
-                .status(e.getStatus())
-                .body(ExceptionResponse.builder()
-                        .status(e.getStatus().value())
-                        .error(e.getStatus().getReasonPhrase())
-                        .message(e.getMessage())
-                        .build());
+        return buildExceptionResponse(e.getStatus(), e);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -71,7 +64,6 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ExceptionResponse> handleAnotherExceptions(Exception e) {
-        e.printStackTrace();
         return buildExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, e);
     }
 

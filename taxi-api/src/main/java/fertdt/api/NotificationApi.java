@@ -4,12 +4,12 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 
 public interface NotificationApi {
 
-    @MessageMapping("/new-call")
+    @MessageMapping("/notification/new-call")
     void notifyDriversAboutNewCall(String taxiRideId);
 
-    @MessageMapping("/stop-call")
+    @MessageMapping("/notification/stop-call")
     void notifyDriversAboutStopCall(String taxiRideId);
 
-    @MessageMapping("/passenger")
+    @MessageMapping("/notification/passenger")
     void notifyPassengerAboutChangeCallStatus(String taxiRideId);
 }

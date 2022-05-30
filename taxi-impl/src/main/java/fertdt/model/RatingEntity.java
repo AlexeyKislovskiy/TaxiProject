@@ -21,6 +21,8 @@ public class RatingEntity extends AbstractEntity {
     @JoinColumn(name = "taxi_ride_id")
     private TaxiRideEntity taxiRide;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "rated_by_id", referencedColumnName = "uuid")
     private UserEntity ratedBy;

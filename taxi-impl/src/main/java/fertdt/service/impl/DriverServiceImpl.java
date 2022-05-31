@@ -116,6 +116,8 @@ public class DriverServiceImpl implements DriverService {
         if (DriverStatusUtil.canWork(driver)) {
             if (driver.getDriverStatus().equals(DriverStatus.NOT_AT_WORK))
                 throw new DriverNotAtWorkException("Driver already not at work");
+            if (userTaxiRideService.driverHasUnfinishedTrip(driverId))
+                throw new DriverAtWorkException("Driver has unfinished trip, cannot stop work");
             setDriverStatus(driverId, DriverStatus.NOT_AT_WORK);
         } else if (!DriverStatusUtil.accountVerified(driver))
             throw new VerifiedException("Account not verified, cannot stop work");

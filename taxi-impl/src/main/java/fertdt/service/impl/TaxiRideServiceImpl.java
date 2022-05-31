@@ -4,7 +4,10 @@ import fertdt.dto.request.TaxiCallRequest;
 import fertdt.dto.request.UpcomingTaxiCallRequest;
 import fertdt.dto.response.DriverResponse;
 import fertdt.dto.response.TaxiRideResponse;
-import fertdt.exception.*;
+import fertdt.exception.CarUsingException;
+import fertdt.exception.DriverAtWorkException;
+import fertdt.exception.DriverNotAtWorkException;
+import fertdt.exception.TaxiRideException;
 import fertdt.exception.deletion.CancelTaxiCallException;
 import fertdt.exception.deletion.CancelTripException;
 import fertdt.exception.notFound.DriverNotFoundException;
@@ -15,7 +18,6 @@ import fertdt.repository.DriverRepository;
 import fertdt.repository.TaxiRideRepository;
 import fertdt.service.*;
 import fertdt.util.CarUsingUtil;
-import fertdt.util.DriverStatusUtil;
 import fertdt.util.TaxiRideStatusUtil;
 import fertdt.util.mapper.TaxiRideMapper;
 import lombok.RequiredArgsConstructor;
@@ -99,21 +101,16 @@ public class TaxiRideServiceImpl implements TaxiRideService {
         DriverEntity driver = driverRepository.findById(driverId).orElseThrow(DriverNotFoundException::new);
         if (!taxiRide.getTaxiRideStatus().equals(TaxiRideStatus.DRIVER_SEARCH))
             throw new TaxiRideException("Cannot take order, because order status is not driver search");
-        if (DriverStatusUtil.canWork(driver)) {
-            if (driver.getDriverStatus().equals(DriverStatus.NOT_AT_WORK))
-                throw new DriverNotAtWorkException("Driver not at work, cannot take order");
-            if (userTaxiRideService.driverHasUnfinishedTrip(driverId)) throw new DriverHasUnfinishedTripException();
-            CarEntity car = CarUsingUtil.getCurrentCar(driver);
-            if (car == null) throw new CarUsingException("Driver cannot take order without car");
-            if (!car.getCarClass().equals(taxiRide.getCarClass())) throw new CarClassNotAppropriateException();
-            if (driverId.equals(taxiRide.getPassenger().getUuid())) throw new DriverAndPassengerSameException();
-            taxiRide.setDriver(driver);
-            taxiRide.setCar(car);
-            taxiRide.setTaxiRideStatus(TaxiRideStatus.WAITING_FOR_DRIVER_ARRIVING);
-            taxiRideRepository.save(taxiRide);
-        } else if (!DriverStatusUtil.accountVerified(driver))
-            throw new VerifiedException("Account not verified, cannot take order");
-        else throw new DriverHasNoContractException("Driver does not have a contract, cannot take order");
+        if (!driver.getDriverStatus().equals(DriverStatus.AT_WORK))
+            throw new DriverNotAtWorkException("Driver not at work, cannot take order");
+        if (userTaxiRideService.driverHasUnfinishedTrip(driverId)) throw new DriverHasUnfinishedTripException();
+        CarEntity car = CarUsingUtil.getCurrentCar(driver);
+        if (car == null) throw new CarUsingException("Driver cannot take order without car");
+        if (!carFitsCall(car, taxiRide)) throw new CarNotAppropriateException();
+        taxiRide.setDriver(driver);
+        taxiRide.setCar(car);
+        taxiRide.setTaxiRideStatus(TaxiRideStatus.WAITING_FOR_DRIVER_ARRIVING);
+        taxiRideRepository.save(taxiRide);
     }
 
     @Override

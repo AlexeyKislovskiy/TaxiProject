@@ -7,12 +7,10 @@ import fertdt.dto.response.CarClassResponse;
 import fertdt.dto.response.GeographicalPointResponse;
 import fertdt.exception.MapboxApiException;
 import fertdt.exception.TaxiRideException;
+import fertdt.exception.relationalshipConflict.GeographicalPointsConflictException;
 import fertdt.model.TaxiRideEntity;
 import fertdt.model.TaxiRideStatus;
-import fertdt.service.CarClassService;
-import fertdt.service.NavigationService;
-import fertdt.service.TripPredictionService;
-import fertdt.service.UserTaxiRideService;
+import fertdt.service.*;
 import fertdt.util.mapper.TripPredictionMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fertdt.consts.Constants.*;
 
@@ -33,6 +32,8 @@ public class TripPredictionServiceImpl implements TripPredictionService {
     private final CarClassService carClassService;
     private final NavigationService navigationService;
     private final UserTaxiRideService userTaxiRideService;
+    private final GeographicalPointService geographicalPointService;
+    private final UserService userService;
 
     @Value("${mapbox.access-token}")
     private String mapboxAccessToken;
@@ -47,6 +48,8 @@ public class TripPredictionServiceImpl implements TripPredictionService {
         if (taxiCallRequest.getIntermediatePoints() != null)
             coordinates.addAll(taxiCallRequest.getIntermediatePoints());
         coordinates.add(taxiCallRequest.getDestination());
+        if (!geographicalPointService.correctTaxiCallGeographicalPoints(coordinates.stream().map(geographicalPointService::getGeographicalPointFromCoordinates).collect(Collectors.toList())))
+            throw new GeographicalPointsConflictException();
         uriVariables.put(COORDINATES_PARAMETER, listOfCoordinatesToString(coordinates));
         ResponseEntity<String> response;
         PredictedTripDto predictedTripDto;
@@ -70,6 +73,7 @@ public class TripPredictionServiceImpl implements TripPredictionService {
 
     @Override
     public Integer predictTimeToDriver(UUID userId) {
+        userService.getUserById(userId);
         TaxiRideEntity taxiRide = userTaxiRideService.getCurrentTaxiRideForUser(userId);
         if (taxiRide == null || !taxiRide.getTaxiRideStatus().equals(TaxiRideStatus.WAITING_FOR_DRIVER_ARRIVING))
             throw new TaxiRideException("Passenger has not active taxi ride with waiting for driver arriving status");

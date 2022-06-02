@@ -1,5 +1,6 @@
 package fertdt.api;
 
+import fertdt.annotation.GlobalApiResponses;
 import fertdt.dto.request.GeographicalCoordinatesRequest;
 import fertdt.dto.request.UserExtendedRequest;
 import fertdt.dto.request.UserRequest;
@@ -13,7 +14,9 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.UUID;
@@ -21,7 +24,8 @@ import java.util.UUID;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RequestMapping("/api/users")
-public interface UserApi {
+@GlobalApiResponses
+public interface UserApi<PRINCIPAL> {
     @ApiOperation(value = "Создать аккаунт нового пользователя", code = 201)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Created. Аккаунт успешно создан", response = UUID.class),
@@ -46,31 +50,27 @@ public interface UserApi {
                          @PathVariable("user-id") UUID userId);
 
 
-    @ApiOperation(value = "Удалить пользователя по его ID")
+    @ApiOperation(value = "Удалить аккаунт")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK. Пользователь успешно удален"),
-            @ApiResponse(code = 404, message = "Not Found. Пользователь с таким ID не найден", response = ExceptionResponse.class)
+            @ApiResponse(code = 200, message = "OK. Аккаунт успешно удален")
     }
     )
-    @DeleteMapping(value = "/{user-id}", produces = APPLICATION_JSON_VALUE)
+    @DeleteMapping(produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    void deleteUser(@ApiParam(value = "ID пользователя", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
-                    @PathVariable("user-id") UUID userId);
+    void deleteUser(@ApiIgnore @AuthenticationPrincipal PRINCIPAL user);
 
 
-    @ApiOperation(value = "Обновить пользователя по его ID")
+    @ApiOperation(value = "Обновить аккаунт")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK. Пользователь успешно обновлен", response = UserResponse.class),
+            @ApiResponse(code = 200, message = "OK. Аккаунт успешно обновлен", response = UserResponse.class),
             @ApiResponse(code = 400, message = "Bad Request. Запрос содержит невалидные данные", response = ExceptionExtendedResponse.class),
-            @ApiResponse(code = 404, message = "Not Found. Пользователь с таким ID не найден", response = ExceptionResponse.class),
             @ApiResponse(code = 409, message = "Conflict. Пользователь с таким юзернеймом уже существует", response = ExceptionResponse.class)
     }
     )
-    @PutMapping(value = "/{user-id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    UserResponse updateUser(@ApiParam(value = "ID пользователя", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
-                            @PathVariable("user-id") UUID userId, @ApiParam(value = "Обновленные значения пользователя")
-                            @Valid @RequestBody UserExtendedRequest user);
+    UserResponse updateUser(@ApiIgnore @AuthenticationPrincipal PRINCIPAL currentUser, @ApiParam(value = "Обновленные значения пользователя")
+    @Valid @RequestBody UserExtendedRequest newUser);
 
 
     @ApiOperation(value = "Войти в аккаунт пользователя")
@@ -90,12 +90,10 @@ public interface UserApi {
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "Accepted. Местоположение пользователя успешно обновлено"),
             @ApiResponse(code = 400, message = "Bad Request. Запрос содержит невалидные данные", response = ExceptionExtendedResponse.class),
-            @ApiResponse(code = 404, message = "Not Found. Пользователь с таким ID не найден", response = ExceptionResponse.class),
     }
     )
-    @PutMapping(value = "/location/{user-id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/location", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    void updateCurrentLocation(@ApiParam(value = "ID пользователя", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
-                               @PathVariable("user-id") UUID userId, @ApiParam(value = "Текущее местоположение пользователя")
-                               @Valid @RequestBody GeographicalCoordinatesRequest geographicalCoordinatesRequest);
+    void updateCurrentLocation(@ApiIgnore @AuthenticationPrincipal PRINCIPAL user, @ApiParam(value = "Текущее местоположение пользователя")
+    @Valid @RequestBody GeographicalCoordinatesRequest geographicalCoordinatesRequest);
 }

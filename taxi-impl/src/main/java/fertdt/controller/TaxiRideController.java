@@ -3,6 +3,7 @@ package fertdt.controller;
 import fertdt.api.TaxiRideApi;
 import fertdt.dto.request.TaxiCallRequest;
 import fertdt.dto.response.TaxiRideResponse;
+import fertdt.security.userdetails.UserAccount;
 import fertdt.service.NotificationService;
 import fertdt.service.TaxiRideService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-public class TaxiRideController implements TaxiRideApi {
+public class TaxiRideController implements TaxiRideApi<UserAccount> {
     private final TaxiRideService taxiRideService;
     private final NotificationService notificationService;
 
@@ -24,8 +25,8 @@ public class TaxiRideController implements TaxiRideApi {
     }
 
     @Override
-    public void cancelTaxiCall(UUID userId) {
-        UUID taxiRideId = taxiRideService.cancelTaxiCall(userId);
+    public void cancelTaxiCall(UserAccount user) {
+        UUID taxiRideId = taxiRideService.cancelTaxiCall(user.getId());
         notificationService.notifyDriversAboutStopCall(taxiRideId);
     }
 
@@ -35,33 +36,33 @@ public class TaxiRideController implements TaxiRideApi {
     }
 
     @Override
-    public void takeOrder(UUID driverId, UUID taxiRideId) {
-        taxiRideService.takeOrder(driverId, taxiRideId);
+    public void takeOrder(UserAccount driver, UUID taxiRideId) {
+        taxiRideService.takeOrder(driver.getId(), taxiRideId);
         notificationService.notifyDriversAboutStopCall(taxiRideId);
         notificationService.notifyPassengerAboutChangeCallStatus(taxiRideId);
     }
 
     @Override
-    public void arriveToClient(UUID driverId) {
-        UUID taxiRideId = taxiRideService.arriveToClient(driverId);
+    public void arriveToClient(UserAccount driver) {
+        UUID taxiRideId = taxiRideService.arriveToClient(driver.getId());
         notificationService.notifyPassengerAboutChangeCallStatus(taxiRideId);
     }
 
     @Override
-    public void startTrip(UUID driverId) {
-        UUID taxiRideId = taxiRideService.startTrip(driverId);
+    public void startTrip(UserAccount driver) {
+        UUID taxiRideId = taxiRideService.startTrip(driver.getId());
         notificationService.notifyPassengerAboutChangeCallStatus(taxiRideId);
     }
 
     @Override
-    public void cancelTrip(UUID driverId) {
-        UUID taxiRideId = taxiRideService.cancelTrip(driverId);
+    public void cancelTrip(UserAccount driver) {
+        UUID taxiRideId = taxiRideService.cancelTrip(driver.getId());
         notificationService.notifyPassengerAboutChangeCallStatus(taxiRideId);
     }
 
     @Override
-    public void finishTrip(UUID driverId) {
-        UUID taxiRideId = taxiRideService.finishTrip(driverId);
+    public void finishTrip(UserAccount driver) {
+        UUID taxiRideId = taxiRideService.finishTrip(driver.getId());
         notificationService.notifyPassengerAboutChangeCallStatus(taxiRideId);
     }
 }

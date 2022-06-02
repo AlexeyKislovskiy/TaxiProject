@@ -1,5 +1,6 @@
 package fertdt.api;
 
+import fertdt.annotation.GlobalApiResponses;
 import fertdt.dto.request.CarUsingRequest;
 import fertdt.dto.request.RentedCarUsingRequest;
 import fertdt.dto.response.AvailableCarsResponse;
@@ -11,7 +12,9 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.UUID;
@@ -19,7 +22,8 @@ import java.util.UUID;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RequestMapping("/api/car-using")
-public interface CarUsingApi {
+@GlobalApiResponses
+public interface CarUsingApi<PRINCIPAL> {
     @ApiOperation(value = "Получить информацию об использовании автомобиля по ID данной сущности")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK. Информация об использовании автомобиля успешно получена", response = CarUsingResponse.class),
@@ -35,15 +39,13 @@ public interface CarUsingApi {
     @ApiOperation(value = "Получить информацию о всех доступных автомобилях для данного водителя")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK. Информация о всех доступных автомобилях успешно получена", response = AvailableCarsResponse.class),
-            @ApiResponse(code = 404, message = "Not Found. Водитель с таким ID не найден", response = ExceptionResponse.class),
             @ApiResponse(code = 406, message = "Not Acceptable. Возможные проблемы: аккаунт водителя не верифицирован," +
                     " у водителя нет контракта с таксопарком", response = ExceptionResponse.class)
     }
     )
-    @GetMapping(value = "/work/{driver-id}", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/work", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    AvailableCarsResponse getAvailableCars(@ApiParam(value = "ID водителя", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
-                                           @PathVariable("driver-id") UUID driverId);
+    AvailableCarsResponse getAvailableCars(@ApiIgnore @AuthenticationPrincipal PRINCIPAL driver);
 
 
     @ApiOperation(value = "Использовать личный автомобиль", code = 202)
@@ -86,15 +88,13 @@ public interface CarUsingApi {
     @ApiOperation(value = "Прекратить использование текущего автомобиля", code = 202)
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "Accepted. Использование автомобиля успешно прекращено"),
-            @ApiResponse(code = 404, message = "Not Found. Водитель с таким ID не найден", response = ExceptionResponse.class),
             @ApiResponse(code = 406, message = "Not Acceptable. Возможные проблемы: аккаунт водителя не верифицирован," +
                     " у водителя нет контракта с таксопарком, водитель пытается прекратить использование автомобиля во время работы," +
                     " водитель и так не использует автомобиль",
                     response = ExceptionResponse.class)
     }
     )
-    @DeleteMapping(value = "work/{driver-id}", produces = APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "work", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    void stopUsingCar(@ApiParam(value = "ID водителя", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
-                      @PathVariable("driver-id") UUID driverId);
+    void stopUsingCar(@ApiIgnore @AuthenticationPrincipal PRINCIPAL driver);
 }

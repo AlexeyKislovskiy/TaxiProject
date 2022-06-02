@@ -1,5 +1,6 @@
 package fertdt.api;
 
+import fertdt.annotation.GlobalApiResponses;
 import fertdt.dto.request.RatingRequest;
 import fertdt.dto.response.ExceptionExtendedResponse;
 import fertdt.dto.response.ExceptionResponse;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RequestMapping("/api/rating")
+@GlobalApiResponses
 public interface RatingApi {
     @ApiOperation(value = "Поставить оценку водителю/пассажиру", code = 202)
     @ApiResponses(value = {

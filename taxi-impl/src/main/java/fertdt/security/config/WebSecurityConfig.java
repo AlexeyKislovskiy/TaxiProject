@@ -1,5 +1,6 @@
 package fertdt.security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fertdt.security.filter.TokenAuthenticationFilter;
 import fertdt.security.userdetails.TokenAuthenticationUserDetailsService;
 import fertdt.service.jwt.JwtTokenService;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
 
@@ -21,29 +23,30 @@ import java.util.Collections;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true, proxyTargetClass = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final TokenAuthenticationUserDetailsService authorizationUserDetailsService;
     private final JwtTokenService jwtTokenService;
+    private final ObjectMapper objectMapper;
 
     private static final String[] PERMIT_ALL = {
+            "/api/users",
             "/api/users/login",
             "/api/token/user-info",
             "/api/token/refresh",
-            //Временно разрешу все запросы
-            "/api/**",
-            "/**"
+            "/chat/**",
+            "/api/notification/**",
+            "/index.html",
     };
 
     private static final String[] IGNORE = {
             "/v2/api-docs",
-            "/swagger-resources",
+            "/v3/api-docs",
             "/swagger-resources/**",
-            "/configuration/ui",
-            "/configuration/security",
-            "/swagger-ui.html",
-            "/webjars/**",
+            "/swagger-ui/**",
+            "/js/**",
+            "/favicon.ico"
     };
 
     @Override
@@ -63,6 +66,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(PERMIT_ALL).permitAll()
                 .anyRequest().authenticated()
                 .and()
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
+                .and()
                 .cors()
                 .and()
                 .csrf().disable()
@@ -78,6 +83,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         authenticationProvider.setThrowExceptionWhenTokenRejected(false);
 
         return authenticationProvider;
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return new CustomAuthenticationEntryPoint(objectMapper);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package fertdt.api;
 
+import fertdt.annotation.GlobalApiResponses;
 import fertdt.dto.request.PersonalCarRequest;
 import fertdt.dto.request.RentedCarRequest;
 import fertdt.dto.response.CarResponse;
@@ -10,6 +11,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,6 +20,7 @@ import java.util.UUID;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RequestMapping("/api/cars")
+@GlobalApiResponses
 public interface CarApi {
     @ApiOperation(value = "Создать личный автомобиль", code = 201)
     @ApiResponses(value = {
@@ -29,6 +32,7 @@ public interface CarApi {
                     "таксопарк владельца и автомобиля отличается", response = ExceptionResponse.class)
     }
     )
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TAXI_PARK_MODERATOR')")
     @PostMapping(value = "/personal", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     UUID createPersonalCar(@ApiParam(value = "Личный автомобиль") @Valid @RequestBody PersonalCarRequest car);
@@ -43,6 +47,7 @@ public interface CarApi {
             @ApiResponse(code = 409, message = "Conflict. Автомобиль с таким номером уже существует", response = ExceptionResponse.class)
     }
     )
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TAXI_PARK_MODERATOR')")
     @PostMapping(value = "/rented", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     UUID createRentedCar(@ApiParam(value = "Автомобиль для сдачи в аренду") @Valid @RequestBody RentedCarRequest car);
@@ -66,6 +71,7 @@ public interface CarApi {
             @ApiResponse(code = 404, message = "Not Found. Автомобиль с таким ID не найден", response = ExceptionResponse.class)
     }
     )
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TAXI_PARK_MODERATOR')")
     @DeleteMapping(value = "/{car-id}", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     void deleteCar(@ApiParam(value = "ID автомобиля", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
@@ -83,6 +89,7 @@ public interface CarApi {
                     "таксопарк владельца и автомобиля отличается", response = ExceptionResponse.class)
     }
     )
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TAXI_PARK_MODERATOR')")
     @PutMapping(value = "/personal/{car-id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     CarResponse updatePersonalCar(@ApiParam(value = "ID автомобиля", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
@@ -99,6 +106,7 @@ public interface CarApi {
             @ApiResponse(code = 409, message = "Conflict. Автомобиль с таким номером уже существует", response = ExceptionResponse.class)
     }
     )
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TAXI_PARK_MODERATOR')")
     @PutMapping(value = "/rented/{car-id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     CarResponse updateRentedCar(@ApiParam(value = "ID автомобиля", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")

@@ -1,5 +1,6 @@
 package fertdt.api;
 
+import fertdt.annotation.GlobalApiResponses;
 import fertdt.dto.response.ExceptionResponse;
 import fertdt.dto.response.PaymentMethodResponse;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +18,7 @@ import java.util.UUID;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RequestMapping("/api/payment-methods")
+@GlobalApiResponses
 public interface PaymentMethodApi {
     @ApiOperation(value = "Получить информацию о способе платежа по его ID")
     @ApiResponses(value = {

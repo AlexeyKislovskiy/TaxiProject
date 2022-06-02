@@ -1,5 +1,6 @@
 package fertdt.api;
 
+import fertdt.annotation.GlobalApiResponses;
 import fertdt.dto.response.CarClassResponse;
 import fertdt.dto.response.ExceptionResponse;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +18,7 @@ import java.util.UUID;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RequestMapping("/api/car-classes")
+@GlobalApiResponses
 public interface CarClassApi {
     @ApiOperation(value = "Получить информацию о классе автомобиля по его ID")
     @ApiResponses(value = {

@@ -1,5 +1,6 @@
 package fertdt.api;
 
+import fertdt.annotation.GlobalApiResponses;
 import fertdt.dto.response.ExceptionResponse;
 import fertdt.dto.response.GeographicalPointResponse;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +18,7 @@ import java.util.UUID;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RequestMapping("/api/geographical-points")
+@GlobalApiResponses
 public interface GeographicalPointApi {
     @ApiOperation(value = "Получить информацию о географической точке по ее ID")
     @ApiResponses(value = {

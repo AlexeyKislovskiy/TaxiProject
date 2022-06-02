@@ -3,15 +3,14 @@ package fertdt.controller;
 import fertdt.api.TripPredictionApi;
 import fertdt.dto.PredictedTripDto;
 import fertdt.dto.request.UpcomingTaxiCallRequest;
+import fertdt.security.userdetails.UserAccount;
 import fertdt.service.TripPredictionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
-
 @RestController
 @RequiredArgsConstructor
-public class TripPredictionController implements TripPredictionApi {
+public class TripPredictionController implements TripPredictionApi<UserAccount> {
     private final TripPredictionService tripPredictionService;
 
     @Override
@@ -20,7 +19,7 @@ public class TripPredictionController implements TripPredictionApi {
     }
 
     @Override
-    public Integer predictTimeToDriverArriving(UUID userId) {
-        return tripPredictionService.predictTimeToDriver(userId);
+    public Integer predictTimeToDriverArriving(UserAccount user) {
+        return tripPredictionService.predictTimeToDriver(user.getId());
     }
 }

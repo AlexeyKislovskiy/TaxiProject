@@ -1,5 +1,6 @@
 package fertdt.api;
 
+import fertdt.annotation.GlobalApiResponses;
 import fertdt.dto.request.ComplaintRequest;
 import fertdt.dto.response.ExceptionExtendedResponse;
 import fertdt.dto.response.ExceptionResponse;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RequestMapping("/api/complaint")
+@GlobalApiResponses
 public interface ComplaintApi {
     @ApiOperation(value = "Отправить жалобу на водителя/пассажира", code = 202)
     @ApiResponses(value = {

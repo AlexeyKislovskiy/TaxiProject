@@ -5,6 +5,7 @@ import fertdt.dto.request.CarUsingRequest;
 import fertdt.dto.request.RentedCarUsingRequest;
 import fertdt.dto.response.AvailableCarsResponse;
 import fertdt.dto.response.CarUsingResponse;
+import fertdt.security.userdetails.UserAccount;
 import fertdt.service.CarUsingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +14,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-public class CarUsingController implements CarUsingApi {
+public class CarUsingController implements CarUsingApi<UserAccount> {
     private final CarUsingService carUsingService;
 
     @Override
@@ -23,8 +24,8 @@ public class CarUsingController implements CarUsingApi {
 
 
     @Override
-    public AvailableCarsResponse getAvailableCars(UUID driverId) {
-        return carUsingService.getAvailableCars(driverId);
+    public AvailableCarsResponse getAvailableCars(UserAccount driver) {
+        return carUsingService.getAvailableCars(driver.getId());
     }
 
     @Override
@@ -38,7 +39,7 @@ public class CarUsingController implements CarUsingApi {
     }
 
     @Override
-    public void stopUsingCar(UUID driverId) {
-        carUsingService.stopUsingCar(driverId);
+    public void stopUsingCar(UserAccount driver) {
+        carUsingService.stopUsingCar(driver.getId());
     }
 }

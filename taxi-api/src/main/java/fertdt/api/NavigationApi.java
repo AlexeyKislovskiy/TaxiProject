@@ -1,5 +1,6 @@
 package fertdt.api;
 
+import fertdt.annotation.GlobalApiResponses;
 import fertdt.dto.request.NearestDriversRequest;
 import fertdt.dto.response.DriverResponse;
 import fertdt.dto.response.ExceptionExtendedResponse;
@@ -20,6 +21,7 @@ import java.util.Set;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RequestMapping("/api/navigation")
+@GlobalApiResponses
 public interface NavigationApi {
     @ApiOperation(value = "Найти ближайших водителей, подходящих для заданного заказа")
     @ApiResponses(value = {

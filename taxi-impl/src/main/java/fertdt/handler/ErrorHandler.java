@@ -48,8 +48,8 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public final ResponseEntity<ExceptionResponse> handleAccessDeniedException(AccessDeniedException e) {
-        return buildExceptionResponse(HttpStatus.FORBIDDEN, e);
+    public final ResponseEntity<ExceptionResponse> handleAccessDeniedException() {
+        return buildExceptionResponse(HttpStatus.FORBIDDEN, new AccessDeniedException("Access to the specified resource has been forbidden"));
     }
 
     @ExceptionHandler(AuthenticationException.class)

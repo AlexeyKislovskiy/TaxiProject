@@ -1,0 +1,97 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="001" author="fertdt">
+        <createTable tableName="taxi_ride">
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_taxi_ride"/>
+            </column>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="passenger_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_taxi_ride_passenger"
+                             referencedTableName="account" referencedColumnNames="uuid"/>
+            </column>
+            <column name="starting_point_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_taxi_ride_starting_point"
+                             referencedTableName="geographical_point" referencedColumnNames="uuid"/>
+            </column>
+            <column name="destination_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_taxi_ride_destination"
+                             referencedTableName="geographical_point" referencedColumnNames="uuid"/>
+            </column>
+            <column name="intermediate_points_order_important" type="BOOLEAN"/>
+            <column name="car_class_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_taxi_ride_to_car_class"
+                             referencedTableName="car_class" referencedColumnNames="uuid"/>
+            </column>
+            <column name="payment_method_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_taxi_ride_to_payment_method"
+                             referencedTableName="payment_method" referencedColumnNames="uuid"/>
+            </column>
+            <column name="taxi_ride_status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="driver_id" type="uuid">
+                <constraints nullable="true" foreignKeyName="fk_taxi_ride_to_driver"
+                             referencedTableName="driver" referencedColumnNames="uuid" deleteCascade="true"/>
+            </column>
+            <column name="car_id" type="uuid">
+                <constraints nullable="true" foreignKeyName="fk_taxi_ride_to_car"
+                             referencedTableName="car" referencedColumnNames="uuid" deleteCascade="true"/>
+            </column>
+            <column name="total_distance" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="arriving_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="trip_start_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="trip_finish_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="predicted_trip_time" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="trip_price" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tips" type="INT"/>
+        </createTable>
+        <sql>
+            ALTER TABLE taxi_ride
+                ADD CONSTRAINT taxi_ride_total_distance_check CHECK (total_distance &gt;= 0);
+            ALTER TABLE taxi_ride
+                ADD CONSTRAINT arriving_time_before_trip_start_time_check CHECK (arriving_time &lt;= trip_start_time);
+            ALTER TABLE taxi_ride
+                ADD CONSTRAINT trip_start_time_before_trip_finish_time_check CHECK (trip_start_time &lt;= trip_finish_time);
+            ALTER TABLE taxi_ride
+                ADD CONSTRAINT taxi_ride_predicted_trip_time_check CHECK (predicted_trip_time &gt;= 0);
+            ALTER TABLE taxi_ride
+                ADD CONSTRAINT taxi_ride_trip_price_check CHECK (trip_price &gt;= 0);
+            ALTER TABLE taxi_ride
+                ADD CONSTRAINT taxi_ride_tips_check CHECK (tips &gt;= 0);
+            ALTER TABLE taxi_ride
+                ADD CONSTRAINT taxi_ride_status_check CHECK (taxi_ride_status in
+                                                             ('DRIVER_SEARCH', 'WAITING_FOR_DRIVER_ARRIVING',
+                                                              'WAITING_FOR_CLIENT', 'TRIP_IN_PROGRESS',
+                                                              'TRIP_IS_OVER', 'TRIP_CANCELED_BY_DRIVER',
+                                                              'TRIP_CANCELED_BY_CLIENT'));
+        </sql>
+    </changeSet>
+
+    <changeSet id="002" author="fertdt">
+        <createTable tableName="taxi_ride_intermediate_points">
+            <column name="taxi_ride_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_taxi_ride_intermediate_points_to_taxi_ride"
+                             referencedTableName="taxi_ride" referencedColumnNames="uuid"/>
+            </column>
+            <column name="intermediate_point_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_taxi_ride_intermediate_points_to_intermediate_point"
+                             referencedTableName="geographical_point" referencedColumnNames="uuid"/>
+            </column>
+        </createTable>
+        <sql>
+            ALTER TABLE taxi_ride_intermediate_points
+                ADD CONSTRAINT pk_taxi_ride_intermediate_points PRIMARY KEY (taxi_ride_id, intermediate_point_id);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

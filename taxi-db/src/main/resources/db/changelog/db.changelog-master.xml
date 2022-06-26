@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <include file="changesets/20220401-KP-1-create_user_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220401-KP-1-create_driver_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220401-KP-1-create_rating_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220404-KP-7-create_car_class_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220404-KP-7-insert_car_classes.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220404-KP-7-create_taxi_park_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220404-KP-7-create_car_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220415-KP-4-create_vehicle_category_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220415-KP-4-insert_vehicle_categories.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220415-KP-4-create_driver_license_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220415-KP-4-create_driver_license_vehicle_category_table.xml"
+             relativeToChangelogFile="true"/>
+    <include file="changesets/20220415-KP-4-create_passport_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220424-KP-4-create_refresh_token_entities.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220424-KP-4-add_role_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220424-KP-4-add_privileges.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220504-KP-5-alter_driver_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220504-KP-5-alter_tables_change_on_delete.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220505-KP-6-create_car_using_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220508-KP-8-create_geographical_point_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220508-KP-8-create_payment_method_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220508-KP-8-create_taxi_ride_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220508-KP-8-create_additional_requirements_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220508-KP-8-create_complaint_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220509-KP-8-alter_rating_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220522-KP-9-alter_user_table.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20220523-KP-9-create_driver_taxi_ride_notification_table.xml"
+             relativeToChangelogFile="true"/>
+    <include file="changesets/20220529-KP-13-alter_taxi_ride_table_change_on_delete.xml"
+             relativeToChangelogFile="true"/>
+    <include file="changesets/20220602-security-add_roles.xml" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>

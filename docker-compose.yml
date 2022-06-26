@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  application:
+    container_name: application
+    build: ./
+    ports:
+      - "8081:8080"
+    depends_on:
+      - database
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/TaxiProject
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=asdasd
+
+  database:
+    image: postgres:14
+    container_name: database
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=TaxiProject
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=asdasd
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

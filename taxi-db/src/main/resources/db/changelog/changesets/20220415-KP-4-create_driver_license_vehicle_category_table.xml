@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="001" author="fertdt">
+        <createTable tableName="driver_license_vehicle_category">
+            <column name="driver_license_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_driver_license"
+                             referencedTableName="driver_license" referencedColumnNames="uuid"/>
+            </column>
+            <column name="vehicle_category_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_vehicle_category"
+                             referencedTableName="vehicle_category" referencedColumnNames="uuid"/>
+            </column>
+        </createTable>
+        <sql>
+            ALTER TABLE driver_license_vehicle_category
+                ADD CONSTRAINT pk_driver_license_vehicle_category PRIMARY KEY (driver_license_id, vehicle_category_id);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

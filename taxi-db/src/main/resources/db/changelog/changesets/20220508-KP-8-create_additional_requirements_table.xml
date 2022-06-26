@@ -1,0 +1,28 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="001" author="fertdt">
+        <createTable tableName="additional_requirements">
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_additional_requirements"/>
+            </column>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="taxi_ride_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_additional_requirements_to_taxi_ride"
+                             referencedTableName="taxi_ride" referencedColumnNames="uuid" deleteCascade="true"/>
+            </column>
+            <column name="seats_number" type="INT"/>
+            <column name="child_seats_number" type="INT"/>
+            <column name="comment_to_driver" type="TEXT"/>
+        </createTable>
+        <sql>
+            ALTER TABLE additional_requirements
+                ADD CONSTRAINT additional_requirements_seats_number_check CHECK (seats_number &gt;= 1);
+            ALTER TABLE additional_requirements
+                ADD CONSTRAINT additional_requirements_child_seats_number_check CHECK (child_seats_number &gt;= 0);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

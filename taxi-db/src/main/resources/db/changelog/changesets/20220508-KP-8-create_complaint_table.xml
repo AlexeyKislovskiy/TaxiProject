@@ -1,0 +1,37 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="001" author="fertdt">
+        <createTable tableName="complaint">
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_complaint"/>
+            </column>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="complaint_to_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_complaint_to"
+                             referencedTableName="account" referencedColumnNames="uuid" deleteCascade="true"/>
+            </column>
+            <column name="complaint_by_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_complaint_by"
+                             referencedTableName="account" referencedColumnNames="uuid" deleteCascade="true"/>
+            </column>
+            <column name="taxi_ride_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_taxi_ride"
+                             referencedTableName="taxi_ride" referencedColumnNames="uuid" deleteCascade="true"/>
+            </column>
+        </createTable>
+        <sql>
+            ALTER TABLE complaint
+                ADD CONSTRAINT complaint_status_check CHECK (status in ('DRIVER_TO_PASSENGER', 'PASSENGER_TO_DRIVER'));
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

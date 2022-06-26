@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="001" author="fertdt">
+        <createTable tableName="driver_taxi_ride_notification">
+            <column name="driver_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_notification_to_driver"
+                             referencedTableName="driver" referencedColumnNames="uuid" deleteCascade="true"/>
+            </column>
+            <column name="taxi_ride_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_notification_to_taxi_ride"
+                             referencedTableName="taxi_ride" referencedColumnNames="uuid" deleteCascade="true"/>
+            </column>
+        </createTable>
+        <sql>
+            ALTER TABLE driver_taxi_ride_notification
+                ADD CONSTRAINT pk_driver_taxi_ride_notification PRIMARY KEY (driver_id, taxi_ride_id);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
